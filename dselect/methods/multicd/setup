@@ -1,14 +1,8 @@
 #!/bin/sh
 #
-# The ‘multicd’ package was initially written by Heiko Schlittermann
-# <heiko@lotte.sax.de> based on builtin access methods written by Ian
-# Jackson <ijackson@chiark.greenend.org.uk>.  The final packaging as well as
-# cleanups were made by Martin Schulze <joey@infodrom.north.de> who also
-# put this package together for the slink release (Debian GNU/Linux
-# 2.1).
-
 # Copyright © 1995-1998 Ian Jackson <ijackson@chiark.greenend.org.uk>
 # Copyright © 1998 Heiko Schlittermann <hs@schlittermann.de>
+# Copyright © 1998-1999 Martin Schulze <joey@infodrom.north.de>
 #
 # This is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -32,7 +26,7 @@ test -d "$vardir/methods/$method" || mkdir "$vardir/methods/$method"
 cd "$vardir/methods/$method"
 tp=/tmp/ddm$$
 
-iarch=`dpkg --print-architecture`
+iarch=$(dpkg --print-architecture)
 dist=stable
 
 xit=1
@@ -60,11 +54,11 @@ getdisklabel () {
     debug "$1" "$2"
     if [ -f $1/.disk/info ]
     then
-	echo -n `head -1 "$1/.disk/info"`
+        echo -n $(head -1 "$1/.disk/info")
     else
         if [ -f $1$2/.disk/info ]
 	then
-	    echo -n `head -1 "$1$2/.disk/info"`
+            echo -n $(head -1 "$1$2/.disk/info")
 	else
             echo -n 'Non-Debian disc'
 	fi
@@ -115,43 +109,6 @@ getblockdev () {
 		if [ $option = multi_cd ]
 		then
 			fstype=iso9660
-		elif [ $option = harddisk2 ]
-		then
-			blockbase="`echo \"$tryblockdevice\" | sed -e 's/[0-9]\{1,\}$//'`"
-			set +e
-			printf 'p\nq\n' | fdisk "$blockbase" 2>/dev/null >$tp.f
-			set -e
-			proposeddevice="$tryblockdevice" perl -ne '
-next unless /^ *Device +Boot +Begin +Start +End +Blocks +Id +System *$/i .. !/\S/;
-next unless s:^/\S+::p && ${^MATCH} eq $ENV{proposeddevice};
-next unless s/^ +(\* +)?\d+ +\d+ +\d+ +\d+\+? +//;
-next unless m/^([0-9a-f]{1,2}) /i;
-%types= ( "1","msdos", "4","msdos", "6","msdos", "7","hpfs", "80","minix",
-          "81","minix", "83","ext2" );
-print $types{$1}; exit(0);	' <$tp.f >$tp.m
-			defaultfstype="`cat $tp.m`"
-			if [ -n "$defaultfstype" ]
-			then
-				cat <<END
-The partition table for $blockbase claims that $tryblockdevice
-contains filesystem type $defaultfstype.
-END
-				if ! grep "	$defaultfstype$" /proc/filesystems >/dev/null
-				then
-					echo \
-	"Your kernel does not appear to support that filesystem type."
-					defaultfstype=""
-				fi
-			fi
-			echo -n "Supported filesystems: "
-			sed -e 's/^.*	/ /' /proc/filesystems | tr '\n' ' '
-			echo -n "
-Enter filesystem type (for $tryblockdevice) [$defaultfstype]:  "
-			read fstype
-			if [ -z "$fstype" ]
-			then
-				fstype="$defaultfstype"
-			fi
 		fi
 		umount="$mountpoint"
 		if mount -rt "$fstype" -o nosuid,nodev$loop "$tryblockdevice" "$mountpoint"
@@ -171,7 +128,7 @@ outputparam () {
 }
 
 ## MAIN
-intrkey="`stty -a | sed -n 's/.*intr = \([^;]*\);.*/\1/p'`"
+intrkey="$(stty -a | sed -n 's/.*intr = \([^;]*\);.*/\1/p')"
 echo "
 If you make a mistake, use the interrupt key ($intrkey) to abort.
 "
@@ -198,8 +155,6 @@ if [ -f shvar.$option ]
 then
 	. ./shvar.$option
 	defaultdevice="$p_blockdev"
-	defaultnfsserver="$p_nfsserver"
-	defaultnfsrempath="$p_nfsrempath"
 	usedevel="$p_usedevel"
 fi
 
@@ -207,7 +162,7 @@ if [ $option = multi_cd ]
 then
 	mount >$tp.m
 	sed -n 's/ ([^)]*)$//; s/^[^ ]* on //; s/ type iso9660$//p' <$tp.m >$tp.l
-	ncdroms=`wc -l <$tp.l`
+	ncdroms=$(wc -l <$tp.l)
 	if [ $ncdroms -gt 1 ]
 	then
 		response=""
@@ -219,11 +174,11 @@ then
 			echo -n \
 	"Is it any of these ?  Type a number, or 'n' for none.  "
 			read response
-			response="`echo \"$response\" | sed -e 's/[ 	]*$//'`"
+                        response="$(echo \"$response\" | sed -e 's/[ 	]*$//')"
 			if expr "$response" : '[0-9][0-9]*$' >/dev/null && \
 			   [ $response -ge 1 -a $response -le $ncdroms ]
 			then
-				mountpoint="`sed -n $response'p' <$tp.l`"
+                                mountpoint="$(sed -n $response'p' <$tp.l)"
 				echo
 			elif expr "$response" : '[Nn]' >/dev/null
 			then
@@ -234,12 +189,12 @@ then
 		done
 	elif [ $ncdroms = 1 ]
 	then
-		mountpoint="`cat $tp.l`"
+		mountpoint="$(cat $tp.l)"
 		perl -ne 'print if s/ type iso9660 \([^)]*\)$// && s/ on .*$//;' \
 			<$tp.m >$tp.d
-		blockdevice="`cat $tp.d`"
+		blockdevice="$(cat $tp.d)"
 		yesno yes \
-	"I see a CD-ROM: $blockdevice, mounted on $mountpoint.  Is it the right one ?"
+	"Found a CD-ROM: $blockdevice, mounted on $mountpoint. Is it the right one?"
 		if [ $yesno = no ]
 		then
 			echo 'Unmounting it ...'
@@ -263,98 +218,11 @@ then
 		if [ -b /dev/cdrom ]
 		then
 			echo \
-	'I see that /dev/cdrom exists and is a block device.'
+	'Found that /dev/cdrom exists and is a block device.'
 			newdefaultdevice=/dev/cdrom
 		fi
 		getblockdev 'Insert the CD-ROM and enter the block device name'
 	fi
-fi
-
-if [ $option = multi_nfs ]
-then
-	mountpoint="$vardir/methods/mnt"
-	while [ -z "$nfsserver" ]
-	do
-		echo -n \
-"What is the name of the NFS server ? [$defaultnfsserver]  "
-		read response
-		if [ -z "$response" -a -n "$defaultnfsserver" ]
-		then
-			response="$defaultnfsserver"
-		fi
-		if [ -z "$response" ]; then continue; fi
-		if [ -x "`which rpcinfo`" ]
-		then
-			if rpcinfo -u "$response" mountd >/dev/null
-			then
-				nfsserver="$response"
-			else
-				echo "$response appears not to be an NFS server."
-			fi
-		elif [ -x "`which ping`" ]
-		then
-			if ping -q -c 1 "$response" | grep -q ', 1 packets received'
-			then
-				nfsserver="$response"
-			else
-				echo "$response appears to be down or nonexistent."
-			fi
-		else
-			echo \
-"(I can't check that now because there is no rpcinfo or ping.)"
-			nfsserver="$response"
-		fi
-	done
-	while [ -z "$nfsrempath" ]
-	do
-		echo -n "
-What is the pathname on the NFS server of the filesystem with
-the Debian files ? [$defaultnfsrempath]  "
-		read response
-		if [ -z "$response" -a -n "$defaultnfsrempath" ]
-		then
-			response="$defaultnfsrempath"
-		else
-			response="`echo \"$response\" | sed -e 's:/$::; s:^/*:/:'`"
-		fi
-		umount="$mountpoint"
-		if mount -rt nfs -o nosuid,nodev "$nfsserver:$response" "$mountpoint"
-		then
-			echo
-			nfsrempath="$response"
-		else
-			umount=""
-			echo \
-"Unable to mount NFS filesystem $nfsserver:$response."
-		fi
-	done
-	nfs="$nfsserver:$nfsrempath"
-fi
-
-if [ $option = harddisk2 ]
-then
-	set +e
-	printf 'p\nq\n' | fdisk /dev/hda 2>/dev/null >$tp.f
-	if [ $? != 0 ]
-	then
-		printf 'p\nq\n' | fdisk /dev/sda 2>/dev/null >$tp.f
-	fi
-	set -e
-	perl -ne '
-next unless /^ *Device +Boot +Begin +Start +End +Blocks +Id +System *$/i .. !/\S/;
-next unless / [146] +DOS \d+-bit \S+$/;
-next unless m:^/\S+:p;
-print ${^MATCH};		' <$tp.f >$tp.d
-	newdefaultdevice="`cat $tp.d`"
-	echo "
-I need to know which disk partition contains the distribution files;
-disk partitions are specified by the block device name in Linux."
-	if [ -n "$newdefaultdevice" ]
-	then
-		echo \
-"By the way, $newdefaultdevice looks like a DOS partition."
-	fi
-	getblockdev "Enter the partition's block device name"
 fi
 
 if [ -n "$mountpoint" ]
@@ -365,12 +233,6 @@ then
 		echo \
 'All directory names should be entered relative to the root of the CD-ROM.
 '
-	elif [ $option = multi_nfs ]
-	then
-		echo \
-"All directory names should be entered relative to the root of the NFS
-filesystem, ie relative to $nfsrempath on the server.
-"
 	else
 		echo \
 "All directory names should be entered relative to the root of the
@@ -392,21 +254,21 @@ do
 	if [ $option = multi_cd ]
 	then
 		echo \
-"I would like to know where on the CD-ROM the top level of the Debian
+"Need to know where on the CD-ROM the top level of the Debian
 distribution is - this will usually contain the 'dists' directory.
 
 If the CD-ROM is badly organized and doesn't have a straightforward copy of
-the distribution you may answer 'none' and we'll go through the parts
-I need individually."
+the distribution you may answer 'none' and the needed parts will be prompted
+individually."
 	else
 		echo \
-"In order to make it easy for me to find the relevant files I'd ideally
-like to install from a straightforward copy of the Debian distribution.
-To use this I'll need to know where the top level of that copy of the
+"In order to make it easy to find the relevant files, it is preferred
+to install from a straightforward copy of the Debian distribution.
+To use this, it is required to know where the top level of that copy of the
 distribution is - this directory usually contains the Packages-Master file.
 
 If you do not have a straightforward copy of the distribution available
-just answer 'none' and we'll go through the parts I need individually."
+just answer 'none' and the needed parts will be prompted individually."
 	fi
 
 	defhierbase=none
@@ -419,7 +281,7 @@ just answer 'none' and we'll go through the parts I need individually."
 			echo "
 Last time you said '$p_hierbase', but that doesn't look plausible,
 since '$p_hierbase/dists/$dist/main/binary-$iarch' doesn't seem to exist.
-And I can't get the impression that you're using a multi-CD  set."
+And it does not appear that you're using a multi-CD set."
 		fi
 	fi
 
@@ -450,11 +312,11 @@ nor are you using a multi-CD set"
 		break
 	fi
 
-	hierbase="`echo \"$response\" | sed -e 's:/$::; s:^/*:/:; s:/\+:/:g;'`"
+	hierbase="$(echo \"$response\" | sed -e 's:/$::; s:^/*:/:; s:/\+:/:g;')"
 	debug "hierbase: [$hierbase]"
 
 	if [ -n "$multi" ]; then
-		disklabel=`getdisklabel "$mountpoint" "/$response"`
+		disklabel=$(getdisklabel "$mountpoint" "/$response")
 		echo "Ok, this is disc"
 		echo "    $disklabel"
 		#echo "Updating multi CD contents file cache ..."
@@ -519,7 +381,7 @@ check_binary () {
 	echo -n "Using '$this_binary' as $1 binary directory"
 
 	if [ -n "$multi" ]; then
-		this_disk=`getdisklabel ${mountpoint} "/$hierbase"`
+		this_disk=$(getdisklabel ${mountpoint} "/$hierbase")
 		echo " from disc"
 		echo "    '$this_disk'"
 	else
@@ -536,7 +398,7 @@ find_area () {
 	this_disk=''
 	if [ -n "$hierbase" ]
 	then
-		check_binary $1 `echo "$hierbase/dists/$3/$1/binary-$iarch" | sed 's:/\+:/:g'`
+		check_binary $1 $(echo "$hierbase/dists/$3/$1/binary-$iarch" | sed 's:/\+:/:g')
 		debug "THIS_BINARY $this_binary"
 	fi
 	if [ $option = multi_cd -a $2 = nf -a -z "$this_binary" ]
@@ -575,7 +437,7 @@ Say 'none' if this area is not available."
 		case "$response" in
 		'' | none)	continue		;;
 		esac
-		check_binary $1 "`echo \"$response\" | sed -e 's:/$::; s:^/*:/:'`"
+		check_binary $1 "$(echo \"$response\" | sed -e 's:/$::; s:^/*:/:')"
 	done
 	if [ -n "$this_binary" ]
 	then
@@ -591,14 +453,14 @@ Say 'none' if this area is not available."
 			done
 		else
 			if [ -f "${mountpoint}${hierbase}/.disk/packages/$1/Packages.gz" ]; then
-				this_packages=`echo "${hierbase}/.disk/packages/$1/Packages.gz"|sed 's:/\+:/:g'`
+				this_packages=$(echo "${hierbase}/.disk/packages/$1/Packages.gz"|sed 's:/\+:/:g')
 				echo "Using '${this_packages}' for $1."
 			fi
 		fi
 		while [ -z "$this_packages" ]
 		do
 			echo -n "
-I can't find the $1 'Packages.cd' file.  The information in the
+Cannot find the $1 'Packages.cd' file. The information in the
 'Packages.cd' file is important for package selection during new
 installations, and is very useful for upgrades.
 
@@ -606,8 +468,8 @@ If you overlooked it when downloading you should do get it now and
 return to this installation procedure when you have done so: you will
 find one Packages.cd file and one Packages.cd.gz file -- either will do --
 in the 'binary' subdirectory of each area on the FTP sites and
-CD-ROMs.  Alternatively (and this will be rather slow) I can scan the
-packages in the distribution area - say 'scan' if you want me to do so.
+CD-ROMs. Alternatively (and this will be rather slow) the packages in
+the distribution area can be scanned - say 'scan' if you want to do so.
 
 You need a separate Packages.cd file from each of the distribution areas
 you wish to install.
@@ -648,9 +510,6 @@ exec 3>shvar.$option.new
 outputparam p_blockdev "$blockdevice"
 outputparam p_fstype "$fstype"
 outputparam p_mountpoint "$mountpoint"
-outputparam p_nfsserver "$nfsserver"
-outputparam p_nfsrempath "$nfsrempath"
-outputparam p_nfs "$nfs"
 outputparam p_hierbase "$hierbase"
 outputparam p_usedevel "$usedevel"
 outputparam p_main_packages "$main_packages"

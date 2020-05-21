@@ -17,12 +17,14 @@
 .\" along with this program.  If not, see <https://www.gnu.org/licenses/>.
 .
 .TH deb\-triggers 5 "%RELEASE_DATE%" "%VERSION%" "dpkg suite"
+.ad l
 .nh
 .SH NAME
 deb\-triggers \- package triggers
 .
 .SH SYNOPSIS
-triggers
+.BR debian/triggers ", " debian/ \fIbinary-package\fP .triggers ", "
+.B DEBIAN/triggers
 .
 .SH DESCRIPTION
 A package declares its relationship to some trigger(s) by including

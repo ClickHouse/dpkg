@@ -20,7 +20,7 @@ set -e
 vardir="$1"
 method=$2
 option=$3
-iarch=`dpkg --print-architecture`
+iarch=$(dpkg --print-architecture)
 
 cd "$vardir/methods/$method"
 
@@ -69,12 +69,6 @@ if [ -n "$p_blockdev" ]
 then
 	umount="$p_mountpoint"
 	mount -rt "$p_fstype" -o nosuid,nodev${loop} "$p_blockdev" "$p_mountpoint"
-fi
-
-if [ -n "$p_nfs" ]
-then
-	umount="$p_mountpoint"
-	mount -rt nfs "$p_nfs" -o nosuid,nodev "$p_mountpoint"
 fi
 
 updatetype=update

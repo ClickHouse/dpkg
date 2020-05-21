@@ -20,6 +20,7 @@
 .\" along with this program.  If not, see <https://www.gnu.org/licenses/>.
 .
 .TH dpkg\-buildpackage 1 "%RELEASE_DATE%" "%VERSION%" "dpkg suite"
+.ad l
 .nh
 .SH NAME
 dpkg\-buildpackage \- build binary or source packages from sources
@@ -90,7 +91,7 @@ It runs the \fBcheck\fP hook and calls a package checker for the
 \fB.changes\fP file (if a command is specified in \fBDEB_CHECK_COMMAND\fP or
 with \fB\-\-check\-command\fP).
 .IP \fB11.\fP 3
-It runs the \fBsign\fP hook and calls \fBgpg2\fP or \fBgpg\fP (as long as it
+It runs the \fBsign\fP hook and calls \fBgpg\fP (as long as it
 is not an UNRELEASED build, or \fB\-\-no\-sign\fP is specified) to sign the
 \fB.dsc\fP file (if any, unless
 \fB\-us\fP or \fB\-\-unsigned\-source\fP is specified), the \fB.buildinfo\fP
@@ -119,7 +120,8 @@ The allowed values are:
 .TP
 .B source
 Builds the source package.
-Note: when using this value standalone and if what you want is simply to
+.IP
+\fBNote:\fP When using this value standalone and if what you want is simply to
 (re-)build the source package from a clean source tree, using
 \fBdpkg\-source\fP directly is always a better option as it does not
 require any build dependencies to be installed which are otherwise
@@ -287,7 +289,7 @@ Implies \fB\-b\fP if nothing else has been selected among \fB\-F\fP,
 \fB\-g\fP, \fB\-G\fP, \fB\-B\fP, \fB\-A\fP or \fB\-S\fP.
 Implies \fB\-d\fP with \fB\-S\fP (since dpkg 1.18.0).
 .TP
-.BR \-\-pre\-clean
+.B \-\-pre\-clean
 Clean the source tree before building (since dpkg 1.18.8).
 This is the default behavior.
 .TP
@@ -297,10 +299,19 @@ Clean the source tree (using
 .BR "debian/rules clean" )
 after the package has been built (long option since dpkg 1.18.8).
 .TP
-.BR \-\-no\-post\-clean
+.B \-\-no\-post\-clean
 Do not clean the source tree after the package has been built
 (since dpkg 1.19.1).
 This is the default behavior.
+.TP
+.B \-\-sanitize\-env
+Sanitize the build environment (since dpkg 1.20.0).
+This will reset or remove environment variables, umask, and any other process
+attributes that might otherwise adversely affect the build of packages.
+Because the official entry point to build packages is \fBdebian/rules\fP,
+packages cannot rely on these settings being in place, and thus should work
+even when they are not.
+What to sanitize is vendor specific.
 .TP
 .BR \-r ", " \-\-root\-command= \fIgain-root-command\fP
 When
@@ -359,7 +370,7 @@ always be executed even if the following action is not performed (except
 for the \fBbinary\fP hook).
 All the hooks will run in the unpacked source directory.
 
-Note: Hooks can affect the build process, and cause build failures if
+\fBNote:\fP Hooks can affect the build process, and cause build failures if
 their commands fail, so watch out for unintended consequences.
 
 The current \fIhook-name\fP supported are:
@@ -399,9 +410,9 @@ Can be used multiple times.
 When \fBdpkg\-buildpackage\fP needs to execute GPG to sign a source
 control (\fB.dsc\fP) file or a \fB.changes\fP file it will run
 \fIsign-command\fP (searching the \fBPATH\fP if necessary) instead of
-\fBgpg2\fP or \fBgpg\fP (long option since dpkg 1.18.8).
+\fBgpg\fP (long option since dpkg 1.18.8).
 \fIsign-command\fP will get all the arguments
-that \fBgpg2\fP or \fBgpg\fP would have gotten. \fIsign-command\fP
+that \fBgpg\fP would have gotten. \fIsign-command\fP
 should not contain spaces or any other shell metacharacters.
 .TP
 .BR \-k ", " \-\-sign\-key= \fIkey-id\fP
@@ -421,30 +432,30 @@ Do not sign the \fB.buildinfo\fP and \fB.changes\fP files
 Do not sign any file, this includes the source package, the \fB.buildinfo\fP
 file and the \fB.changes\fP file (since dpkg 1.18.20).
 .TP
-.BR \-\-force\-sign
+.B \-\-force\-sign
 Force the signing of the resulting files (since dpkg 1.17.0), regardless of
 \fB\-us\fP, \fB\-\-unsigned\-source\fP,
 \fB\-ui\fP, \fB\-\-unsigned\-buildinfo\fP,
 \fB\-uc\fP, \fB\-\-unsigned\-changes\fP
 or other internal heuristics.
 .TP
-.BR \-sn
+.B \-sn
 .TQ
-.BR \-ss
+.B \-ss
 .TQ
-.BR \-sA
+.B \-sA
 .TQ
-.BR \-sk
+.B \-sk
 .TQ
-.BR \-su
+.B \-su
 .TQ
-.BR \-sr
+.B \-sr
 .TQ
-.BR \-sK
+.B \-sK
 .TQ
-.BR \-sU
+.B \-sU
 .TQ
-.BR \-sR
+.B \-sR
 .TQ
 .BR \-i ", " \-\-diff\-ignore [=\fIregex\fP]
 .TQ
@@ -472,7 +483,7 @@ The default location is \fI%ADMINDIR%\fP.
 .BR \-? ", " \-\-help
 Show the usage message and exit.
 .TP
-.BR \-\-version
+.B \-\-version
 Show the version and exit.
 .
 .SH ENVIRONMENT
@@ -576,7 +587,6 @@ and initial arguments for
 .IR gain-root-command " and " sign-command .
 .
 .SH SEE ALSO
-.ad l
 .BR dpkg\-source (1),
 .BR dpkg\-architecture (1),
 .BR dpkg\-buildflags (1),
@@ -584,5 +594,4 @@ and initial arguments for
 .BR dpkg\-genchanges (1),
 .BR fakeroot (1),
 .BR lintian (1),
-.BR gpg2 (1),
 .BR gpg (1).

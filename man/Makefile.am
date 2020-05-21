@@ -9,6 +9,7 @@ man_MANS = \
 	deb-src-control.5 \
 	deb-src-files.5 \
 	deb-src-rules.5 \
+	deb-src-symbols.5 \
 	deb-version.7 \
 	deb-shlibs.5 \
 	deb-split.5 \
@@ -91,6 +92,7 @@ EXTRA_DIST = \
 	deb-src-control.man \
 	deb-src-files.man \
 	deb-src-rules.man \
+	deb-src-symbols.man \
 	deb-substvars.man \
 	deb-symbols.man \
 	deb-triggers.man \
@@ -146,7 +148,7 @@ PO4A_V_ = $(PO4A_V_@AM_DEFAULT_V@)
 PO4A_V_0 = @echo "  PO4A   $@";
 
 PO4A_OPTS = --previous --srcdir $(srcdir) --destdir $(builddir) --no-backups \
-            --porefs noline,wrap --msgmerge-opt=--add-location=file \
+            --porefs file --msgmerge-opt=--add-location=file \
             --package-name dpkg-man --package-version $(PACKAGE_VERSION) \
             --copyright-holder "$(PACKAGE_COPYRIGHT_HOLDER)" \
             --msgid-bugs-address $(PACKAGE_BUGREPORT)

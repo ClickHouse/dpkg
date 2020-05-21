@@ -20,6 +20,7 @@
 .\" along with this program.  If not, see <https://www.gnu.org/licenses/>.
 .
 .TH dpkg\-parsechangelog 1 "%RELEASE_DATE%" "%VERSION%" "dpkg suite"
+.ad l
 .nh
 .SH NAME
 dpkg\-parsechangelog \- parse Debian changelog files
@@ -60,7 +61,7 @@ The field name is not printed, only its value.
 .BR \-? ", " \-\-help
 Show the usage message and exit.
 .TP
-.BR \-\-version
+.B \-\-version
 Show the version and exit.
 .SS Parser Options
 The following options can be used to influence the output of
@@ -124,10 +125,13 @@ metadata for each entry is preserved.
 .TP
 .B \-\-reverse
 Include all changes in reverse order (since dpkg 1.19.1).
-Note: for the \fBdpkg\fP format the first entry will be the most ancient entry.
+.IP
+\fBNote:\fP For the \fBdpkg\fP format the first entry will be the most ancient
+entry.
 .TP
 .B \-\-all
-Include all changes. Note: other options have no effect when this is in use.
+Include all changes.
+\fBNote:\fP Other options have no effect when this is in use.
 .TP
 .BR \-s ", " \-\-since " \fIversion\fP"
 .TQ
@@ -162,7 +166,9 @@ be included within the last 40 lines of the changelog file, matching the Perl
 regular expression: “\fB\\schangelog-format:\\s+([0-9a-z]+)\\W\fP”.
 The part in parentheses should be the name of the format. For example:
 
-       @@@ changelog-format: \fIotherformat\fP @@@
+.RS
+@@@ changelog-format: \fIotherformat\fP @@@
+.RE
 
 Changelog format names are non-empty strings of lowercase alphanumerics
 (“a-z0-9”).

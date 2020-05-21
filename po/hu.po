@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dpkg 1.17.0\n"
 "Report-Msgid-Bugs-To: debian-dpkg@lists.debian.org\n"
-"POT-Creation-Date: 2019-06-03 23:21+0200\n"
+"POT-Creation-Date: 2020-03-08 03:34+0100\n"
 "PO-Revision-Date: 2015-06-26 16:11+0200\n"
 "Last-Translator: SZERVÁC Attila <sas@321.hu>\n"
 "Language-Team: Hungarian <debian-l10n-hungarian@lists.debian.org>\n"
@@ -112,6 +112,12 @@ msgstr "hiba stdout íráskor: %s"
 
 #: lib/dpkg/atomic-file.c
 #, fuzzy, c-format
+#| msgid "cannot scan directory '%.255s'"
+msgid "cannot create base directory for %s"
+msgstr "`%.255s' könyvtár nem nézhető át"
+
+#: lib/dpkg/atomic-file.c
+#, fuzzy, c-format
 msgid "unable to create new file '%.250s'"
 msgstr "e forrásfájl nem megnyitható: `%.250s'"
 
@@ -207,6 +213,11 @@ msgstr "%s: belső gzip hiba: `%s'"
 #: lib/dpkg/compress.c
 #, fuzzy, c-format
 msgid "%s: internal gzip write error"
+msgstr "%s: belső gzip hiba: `%s'"
+
+#: lib/dpkg/compress.c
+#, fuzzy, c-format
+msgid "%s: internal gzip read error: %s"
 msgstr "%s: belső gzip hiba: `%s'"
 
 #: lib/dpkg/compress.c
@@ -346,6 +357,12 @@ msgid ""
 msgstr "Az updates könyvtár eltérő hosszú fájlneveket tartalmaz (%d és %d is)"
 
 #: lib/dpkg/dbmodify.c
+#, fuzzy, c-format
+#| msgid "cannot scan updates directory '%.255s'"
+msgid "cannot create the dpkg updates directory %s"
+msgstr "nem tudom átnézni az updates könyvtárat: `%.255s'"
+
+#: lib/dpkg/dbmodify.c
 #, c-format
 msgid "cannot scan updates directory '%.255s'"
 msgstr "nem tudom átnézni az updates könyvtárat: `%.255s'"
@@ -407,6 +424,12 @@ msgstr "a dpkg állapot adatbázis lezárása sikertelen"
 #: lib/dpkg/dbmodify.c
 msgid "requested operation requires superuser privilege"
 msgstr "a kért művelet rendszergazda jogokat igényel"
+
+#: lib/dpkg/dbmodify.c
+#, fuzzy, c-format
+#| msgid "unable to access dpkg status area"
+msgid "cannot create the dpkg database directory %s"
+msgstr "nem érem el a dpkg állapot területet"
 
 #: lib/dpkg/dbmodify.c
 #, fuzzy, c-format
@@ -1061,15 +1084,32 @@ msgstr "e forrásfájl nem megnyitható: `%.250s'"
 
 #: lib/dpkg/file.c
 #, fuzzy, c-format
+#| msgid "unable to unlock %s: %s"
+msgid "unable to lock %s"
+msgstr "nem tudom kioldani %s-t: %s"
+
+#: lib/dpkg/file.c
+msgid ""
+"Note: removing the lock file is always wrong, and can end up damaging the\n"
+"locked area and the entire system. See <https://wiki.debian.org/Teams/Dpkg/"
+"FAQ>."
+msgstr ""
+
+#: lib/dpkg/file.c
+#, fuzzy, c-format
 #| msgid "status database area is locked by another process"
-msgid "%s is locked by another process"
+msgid ""
+"%s was locked by another process\n"
+"%s"
 msgstr "az állapot adatbázis területet más folyamat zárolja"
 
 #: lib/dpkg/file.c
 #, fuzzy, c-format
-#| msgid "unable to unlock %s: %s"
-msgid "unable to lock %s"
-msgstr "nem tudom kioldani %s-t: %s"
+#| msgid "status database area is locked by another process"
+msgid ""
+"%s was locked by another process with pid %d\n"
+"%s"
+msgstr "az állapot adatbázis területet más folyamat zárolja"
 
 #: lib/dpkg/file.c
 #, fuzzy, c-format
@@ -1424,15 +1464,15 @@ msgstr "nem találok csomag infót ebben: `%.255s'"
 #: lib/dpkg/parsehelp.c
 #, fuzzy, c-format
 msgid ""
-"parsing file '%.255s' near line %d package '%.255s':\n"
-" %.255s"
+"parsing file '%s' near line %d package '%s':\n"
+" "
 msgstr "%s, e fájl `%.255s' %d. soránál"
 
 #: lib/dpkg/parsehelp.c
 #, fuzzy, c-format
 msgid ""
 "parsing file '%.255s' near line %d:\n"
-" %.255s"
+" "
 msgstr "%s, e fájl `%.255s' %d. soránál"
 
 #: lib/dpkg/parsehelp.c
@@ -1838,11 +1878,6 @@ msgstr ""
 msgid "unable to create triggers state directory '%.250s'"
 msgstr "`%.250s' raktár könyvtár nem olvasható"
 
-#: lib/dpkg/triglib.c
-#, fuzzy, c-format
-msgid "unable to set ownership of triggers state directory '%.250s'"
-msgstr "`%.250s' raktár könyvtár nem olvasható"
-
 #: lib/dpkg/trigname.c
 msgid "empty trigger names are not permitted"
 msgstr ""
@@ -2006,8 +2041,9 @@ msgstr ""
 "verziója."
 
 #: src/archives.c
-#, c-format
-msgid "unable to stat '%.255s' (which I was about to install)"
+#, fuzzy, c-format
+#| msgid "unable to stat '%.255s' (which I was about to install)"
+msgid "unable to stat '%.255s' (which was about to be installed)"
 msgstr "nem találom `%.255s'-t (melyet telepítenem kéne)"
 
 #: src/archives.c
@@ -3385,7 +3421,7 @@ msgid "Configure any package which may help this one"
 msgstr ""
 
 #: src/force.c
-msgid "Process incidental packages even when on hold"
+msgid "Install or remove incidental packages even when on hold"
 msgstr ""
 
 #: src/force.c
@@ -6178,6 +6214,12 @@ msgid "File '%.250s' is not part of a multipart archive.\n"
 msgstr "`%.250s' fájl nem egy több részes archívum része.\n"
 
 #: dpkg-split/queue.c
+#, fuzzy, c-format
+#| msgid "cannot scan directory '%.255s'"
+msgid "cannot create directory %s"
+msgstr "`%.255s' könyvtár nem nézhető át"
+
+#: dpkg-split/queue.c
 #, c-format
 msgid "unable to reopen part file '%.250s'"
 msgstr "`%.250s' rész fájl újranyitása sikertelen"
@@ -6525,6 +6567,12 @@ msgstr "Elavult %s szolga lánc átugrása (%s)."
 
 #: utils/update-alternatives.c
 #, fuzzy, c-format
+#| msgid "cannot scan updates directory '%.255s'"
+msgid "cannot create administrative directory '%s'"
+msgstr "nem tudom átnézni az updates könyvtárat: `%.255s'"
+
+#: utils/update-alternatives.c
+#, fuzzy, c-format
 msgid "unable to flush file '%s'"
 msgstr "nem lehet kiüríteni a vsnprintf-ben"
 
@@ -6869,6 +6917,10 @@ msgstr ""
 #: utils/update-alternatives.polkit.in
 msgid "Authentication is required to run update-alternatives"
 msgstr ""
+
+#, fuzzy
+#~ msgid "unable to set ownership of triggers state directory '%.250s'"
+#~ msgstr "`%.250s' raktár könyvtár nem olvasható"
 
 #, fuzzy
 #~| msgid "unable to open tmpfile for vsnprintf"

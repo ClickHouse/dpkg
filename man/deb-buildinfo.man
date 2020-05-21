@@ -18,6 +18,7 @@
 .\" along with this program.  If not, see <https://www.gnu.org/licenses/>.
 .
 .TH deb\-buildinfo 5 "%RELEASE_DATE%" "%VERSION%" "dpkg suite"
+.ad l
 .nh
 .SH NAME
 deb\-buildinfo \- Debian build information file format
@@ -37,7 +38,7 @@ Fields are delimited only by field tags.
 In other words, field text may be multiple lines in length, but the
 installation tools will generally join lines when processing the body
 of the field (except in case of the multiline fields
-.BR Binary\-Only\-Changes ", " Installed\-Build\-Depends ", " Environment ", "
+.BR Binary\-Only\-Changes ", " Installed\-Build\-Depends ", " Environment ,
 .BR Checksums\-Md5 ", " Checksums\-Sha1
 and
 .BR Checksums\-Sha256 ,
@@ -72,8 +73,9 @@ If the source version differs from the binary version, then the
 \fIsource-name\fP will be followed by a \fIsource-version\fP in parenthesis.
 This can happen when the build is for a binary-only non-maintainer upload.
 .TP
-.BR Binary: " \fIbinary-package-list\fP (required)"
+.BR Binary: " \fIbinary-package-list\fP (required in context)"
 This folded field is a space-separated list of binary packages built.
+If the build is source-only, then the field is omitted (since dpkg 1.20.0).
 .TP
 .BR Architecture: " \fIarch-list\fP (required)"
 This space-separated field lists the architectures of the files currently
@@ -202,20 +204,13 @@ For dependencies coming from the source control fields, all dependency
 alternatives and all providers of virtual packages depended on will be
 included.
 .TP
-.BR Environment:
+.B Environment:
 .TQ
 .I " variable-list"
 The list of environment variables that are known to affect the package build
 process, with each environment variable followed by an equal sign (‘=’)
 and the variable's quoted value, using double quotes (‘"’), and
 backslashes escaped (‘\\\\’).
-.
-.\" .SH EXAMPLE
-.\" .RS
-.\" .nf
-.\"
-.\" .fi
-.\" .RE
 .
 .SH SEE ALSO
 .BR deb\-changes (5),

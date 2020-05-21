@@ -1,3 +1,4 @@
+# serial 1
 # Copyright © 2005 Scott James Remnant <scott@netsplit.com>
 # Copyright © 2007 Frank Lichtenheld <djpig@debian.org>
 # Copyright © 2007, 2009, 2011 Guillem Jover <guillem@debian.org>
@@ -7,7 +8,7 @@
 # Locate perl interpreter in the path
 AC_DEFUN([DPKG_PROG_PERL], [
   AC_ARG_VAR([PERL], [Perl interpreter])dnl
-  m4_define([_PERL_MIN_VERSION], [5.20.2])
+  m4_define([_PERL_MIN_VERSION], [5.24.1])
   AC_SUBST([PERL_MIN_VERSION], [_PERL_MIN_VERSION])
   AC_CACHE_CHECK([for perl >= _PERL_MIN_VERSION], [ac_cv_path_PERL], [
     AC_PATH_PROGS_FEATURE_CHECK([PERL], [perl], [

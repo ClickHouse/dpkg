@@ -18,6 +18,7 @@
 .\" along with this program.  If not, see <https://www.gnu.org/licenses/>.
 .
 .TH dpkg\-buildflags 1 "%RELEASE_DATE%" "%VERSION%" "dpkg suite"
+.ad l
 .nh
 .SH NAME
 dpkg\-buildflags \- returns build flags to use during package build
@@ -64,17 +65,17 @@ The configuration files can contain comments on lines starting with a hash
 (#). Empty lines are also ignored.
 .SH COMMANDS
 .TP
-.BI \-\-dump
+.B \-\-dump
 Print to standard output all compilation flags and their values. It prints
 one flag per line separated from its value by an equal sign
 (“\fIflag\fP=\fIvalue\fP”). This is the default action.
 .TP
-.BI \-\-list
+.B \-\-list
 Print the list of flags supported by the current vendor
 (one per line). See the \fBSUPPORTED FLAGS\fP section for more
 information about them.
 .TP
-.BI \-\-status
+.B \-\-status
 Display any information that can be useful to explain the behaviour of
 \fBdpkg\-buildflags\fP (since dpkg 1.16.5): relevant environment variables,
 current vendor, state of all feature flags.
@@ -134,14 +135,14 @@ the flag is set/modified by a user-specific configuration;
 the flag is set/modified by an environment-specific configuration.
 .RE
 .TP
-.BI \-\-query
+.B \-\-query
 Print any information that can be useful to explain the behaviour of the
 program: current vendor, relevant environment variables, feature areas,
 state of all feature flags, and the compiler flags with their origin
 (since dpkg 1.19.0).
 .IP
 For example:
-.nf
+.EX
   Vendor: Debian
   Environment:
    DEB_CFLAGS_SET=-O0 -Wall
@@ -162,7 +163,7 @@ For example:
   Flag: CPPFLAGS
   Value: -D_FORTIFY_SOURCE=2
   Origin: vendor
-.fi
+.EE
 .TP
 .BI \-\-query\-features " area"
 Print the features enabled for a given area (since dpkg 1.16.2).
@@ -175,13 +176,13 @@ Exits with 0 if the area is known otherwise exits with 1.
 The output is in RFC822 format, with one section per feature.
 For example:
 .IP
-.nf
+.EX
   Feature: pie
   Enabled: yes
 
   Feature: stackprotector
   Enabled: yes
-.fi
+.EE
 .TP
 .B \-\-help
 Show the usage message and exit.
@@ -237,14 +238,18 @@ and \fBDEB_BUILD_MAINT_OPTIONS\fP environment variable's area value with the
 For example, to enable the \fBhardening\fP “pie” feature and disable the
 “fortify” feature you can do this in \fBdebian/rules\fP:
 .P
+.EX
   export DEB_BUILD_MAINT_OPTIONS=hardening=+pie,\-fortify
+.EE
 .P
 The special feature \fBall\fP (valid in any area) can be used to enable or
 disable all area features at the same time.
 Thus disabling everything in the \fBhardening\fP area and enabling only
 “format” and “fortify” can be achieved with:
 .P
+.EX
   export DEB_BUILD_MAINT_OPTIONS=hardening=\-all,+format,+fortify
+.EE
 .
 .SS future
 Several compile-time options (detailed below) can be used to enable features
@@ -276,7 +281,7 @@ propagate and to allow finding any omission of normal build flag settings.
 The only currently supported flags are \fBCPPFLAGS\fP, \fBCFLAGS\fP,
 \fBOBJCFLAGS\fP, \fBCXXFLAGS\fP and \fBOBJCXXFLAGS\fP with flags set
 to \fB\-D__DEB_CANARY_\fP\fIflag\fP_\fIrandom-id\fP\fB__\fP, and
-\fBLDFLAGS\fP set to \fB\-Wl,\-z,deb-canary\-\fP\fIrandom-id\fP.
+\fBLDFLAGS\fP set to \fB\-Wl,\-z,deb\-canary\-\fP\fIrandom-id\fP.
 .
 .SS sanitize
 Several compile-time options (detailed below) can be used to help sanitize
@@ -319,7 +324,7 @@ string uses, and will fail when format functions are used in a way
 that represent possible security problems. At present, this warns about
 calls to \fBprintf\fP and \fBscanf\fP functions where the format string is
 not a string literal and there are no format arguments, as in
-\fBprintf(foo);\fP instead of \fPprintf("%s", foo);\fP
+\fBprintf(foo);\fP instead of \fBprintf("%s", foo);\fP
 This may be a security hole if the format string came from untrusted
 input and contains ‘%n’.
 .
@@ -564,9 +569,9 @@ The accepted values are: \fB0\fP and \fB1\fP (default).
 .B %PKGCONFDIR%/buildflags.conf
 System wide configuration file.
 .TP
-.BR $XDG_CONFIG_HOME/dpkg/buildflags.conf " or "
+.BR $XDG_CONFIG_HOME/dpkg/buildflags.conf " or"
 .TQ
-.BR $HOME/.config/dpkg/buildflags.conf
+.B $HOME/.config/dpkg/buildflags.conf
 User configuration file.
 .SS Packaging support
 .TP
@@ -578,29 +583,29 @@ supported by \fBdpkg-buildflags\fP into variables (since dpkg 1.16.1).
 To pass build flags to a build command in a Makefile:
 .PP
 .RS 4
-.nf
+.EX
 $(MAKE) $(shell dpkg\-buildflags \-\-export=cmdline)
 
 \&./configure $(shell dpkg\-buildflags \-\-export=cmdline)
-.fi
+.EE
 .RE
 .PP
 To set build flags in a shell script or shell fragment, \fBeval\fP can be
 used to interpret the output and to export the flags in the environment:
 .PP
 .RS 4
-.nf
+.EX
 eval "$(dpkg\-buildflags \-\-export=sh)" && make
-.fi
+.EE
 .RE
 .PP
 or to set the positional parameters to pass to a command:
 .PP
 .RS 4
-.nf
+.EX
 eval "set \-\- $(dpkg\-buildflags \-\-export=cmdline)"
 for dir in a b c; do (cd $dir && ./configure "$@" && make); done
-.fi
+.EE
 .RE
 .
 .SS Usage in debian/rules
@@ -623,28 +628,28 @@ If you want to export all buildflags into the environment (where they
 can be picked up by your build system):
 .PP
 .RS 4
-.nf
+.EX
 DPKG_EXPORT_BUILDFLAGS = 1
 include %PKGDATADIR%/buildflags.mk
-.fi
+.EE
 .RE
 .PP
 For some extra control over what is exported, you can manually export
 the variables (as none are exported by default):
 .PP
 .RS 4
-.nf
+.EX
 include %PKGDATADIR%/buildflags.mk
 export CPPFLAGS CFLAGS LDFLAGS
-.fi
+.EE
 .RE
 .PP
 And you can of course pass the flags to commands manually:
 .PP
 .RS 4
-.nf
+.EX
 include %PKGDATADIR%/buildflags.mk
 build\-arch:
 \&	$(CC) \-o hello hello.c $(CPPFLAGS) $(CFLAGS) $(LDFLAGS)
-.fi
+.EE
 .RE

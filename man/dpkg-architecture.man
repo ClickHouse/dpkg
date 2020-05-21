@@ -19,6 +19,7 @@
 .\" along with this program.  If not, see <https://www.gnu.org/licenses/>.
 .
 .TH dpkg\-architecture 1 "%RELEASE_DATE%" "%VERSION%" "dpkg suite"
+.ad l
 .nh
 .SH NAME
 dpkg\-architecture \- set and determine the architecture for package building
@@ -73,7 +74,7 @@ Print the value of a single variable.
 .TP
 .BR \-s ", " \-\-print\-set
 Print an export command. This can be used to set the environment variables
-using eval.
+using the POSIX shell \fBeval\fP.
 .TP
 .BR \-u ", " \-\-print\-unset
 Print a similar command to \fB\-\-print\-unset\fP but to unset all variables.
@@ -154,11 +155,16 @@ The general form is a Debian architecture tuple with four or less elements,
 and with at least one of them being \fBany\fP.
 Missing elements of the tuple are prefixed implicitly as \fBany\fP, and thus
 the following pairs are equivalent:
-.nf
-    \fBany\fP\-\fBany\fP\-\fBany\fP\-\fBany\fP = \fBany\fP
-    \fBany\fP\-\fBany\fP\-\fIos\fP\-\fBany\fP = \fIos\fP\-\fBany\fP
-    \fBany\fP\-\fIlibc\fP\-\fBany\fP\-\fBany\fP = \fIlibc\fP\-\fBany\fP\-\fBany\fP
-.fi
+.IP
+.RS 8
+.TP
+\fBany\fP\-\fBany\fP\-\fBany\fP\-\fBany\fP = \fBany\fP
+.TQ
+\fBany\fP\-\fBany\fP\-\fIos\fP\-\fBany\fP = \fIos\fP\-\fBany\fP
+.TQ
+\fBany\fP\-\fIlibc\fP\-\fBany\fP\-\fBany\fP = \fIlibc\fP\-\fBany\fP\-\fBany\fP
+.RE
+.IP
 Examples: linux\-any, any\-i386, hurd\-any, eabi\-any\-any\-arm,
 musl\-any\-any.
 .IP "GNU system type" 4
@@ -282,22 +288,30 @@ Makefile snippet that properly sets and exports all the variables that
 \fBdpkg\-buildpackage\fP accepts the \fB\-a\fR option and passes it to
 \fBdpkg\-architecture\fP. Other examples:
 .IP
+.EX
 CC=i386\-gnu\-gcc dpkg\-architecture \-c debian/rules build
+.EE
 .IP
-eval \`dpkg\-architecture \-u\`
+.EX
+eval $(dpkg\-architecture \-u)
+.EE
 .PP
 Check if the current or specified host architecture is equal to an
 architecture:
 .IP
+.EX
 dpkg\-architecture \-elinux\-alpha
-.IP
+
 dpkg\-architecture \-amips \-elinux\-mips
+.EE
 .PP
 Check if the current or specified host architecture is a Linux system:
 .IP
+.EX
 dpkg\-architecture \-ilinux\-any
-.IP
+
 dpkg\-architecture \-ai386 \-ilinux\-any
+.EE
 .
 .SS Usage in debian/rules
 The environment variables set by \fBdpkg\-architecture\fP are passed to
@@ -311,7 +325,7 @@ package:
 Retrieving the GNU system type and forwarding it to ./configure:
 .PP
 .RS 4
-.nf
+.EX
 DEB_BUILD_GNU_TYPE ?= $(shell dpkg\-architecture \-qDEB_BUILD_GNU_TYPE)
 DEB_HOST_GNU_TYPE ?= $(shell dpkg\-architecture \-qDEB_HOST_GNU_TYPE)
 [...]
@@ -323,19 +337,19 @@ else
 endif
 [...]
 \&./configure $(confflags)
-.fi
+.EE
 .RE
 .PP
 Doing something only for a specific architecture:
 .PP
 .RS 4
-.nf
+.EX
 DEB_HOST_ARCH ?= $(shell dpkg\-architecture \-qDEB_HOST_ARCH)
 
 ifeq ($(DEB_HOST_ARCH),alpha)
   [...]
 endif
-.fi
+.EE
 .RE
 .PP
 or if you only need to check the CPU or OS type, use the
@@ -345,13 +359,13 @@ Note that you can also rely on an external Makefile snippet to properly
 set all the variables that \fBdpkg\-architecture\fP can provide:
 .PP
 .RS 4
-.nf
+.EX
 include %PKGDATADIR%/architecture.mk
 
 ifeq ($(DEB_HOST_ARCH),alpha)
   [...]
 endif
-.fi
+.EE
 .RE
 .PP
 In any case, you should never use \fBdpkg \-\-print\-architecture\fP to get

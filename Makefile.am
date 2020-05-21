@@ -18,6 +18,20 @@ SUBDIRS = \
 
 ACLOCAL_AMFLAGS = -I m4
 
+aclocaldir = $(datadir)/aclocal
+
+dist_aclocal_DATA = \
+	m4/dpkg-arch.m4 \
+	m4/dpkg-build.m4 \
+	m4/dpkg-compiler.m4 \
+	m4/dpkg-coverage.m4 \
+	m4/dpkg-funcs.m4 \
+	m4/dpkg-libs.m4 \
+	m4/dpkg-linker.m4 \
+	m4/dpkg-progs.m4 \
+	m4/dpkg-types.m4 \
+	m4/dpkg-unicode.m4 \
+	$(nil)
 
 dist_pkgdata_DATA = \
 	data/pie-compile.specs \
@@ -47,7 +61,6 @@ EXTRA_DIST = \
 	doc/triggers.txt \
 	debian/bug-script \
 	debian/changelog \
-	debian/compat \
 	debian/control \
 	debian/copyright \
 	debian/dpkg-dev.docs \
@@ -59,7 +72,6 @@ EXTRA_DIST = \
 	debian/dpkg.docs \
 	debian/dpkg.install \
 	debian/dpkg.manpages \
-	debian/dpkg.postinst \
 	debian/dpkg.postrm \
 	debian/dpkg.logrotate \
 	debian/dpkg.lintian-overrides \
@@ -68,6 +80,7 @@ EXTRA_DIST = \
 	debian/dselect.docs \
 	debian/dselect.install \
 	debian/dselect.manpages \
+	debian/dselect.postrm \
 	debian/libdpkg-dev.docs \
 	debian/libdpkg-dev.install \
 	debian/libdpkg-perl.docs \
