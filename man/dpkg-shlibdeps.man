@@ -20,6 +20,7 @@
 .\" along with this program.  If not, see <https://www.gnu.org/licenses/>.
 .
 .TH dpkg\-shlibdeps 1 "%RELEASE_DATE%" "%VERSION%" "dpkg suite"
+.ad l
 .nh
 .SH NAME
 dpkg\-shlibdeps \- generate shared library substvar dependencies
@@ -144,7 +145,7 @@ Prepend
 to the list of directories to search for private shared libraries
 (since dpkg 1.17.0). This option can be used multiple times.
 
-Note: Use this option instead of setting \fBLD_LIBRARY_PATH\fP,
+\fBNote:\fP Use this option instead of setting \fBLD_LIBRARY_PATH\fP,
 as that environment variable is used to control the run-time linker
 and abusing it to set the shared library paths at build-time can be
 problematic when cross-compiling for example.
@@ -210,7 +211,7 @@ Write substitution variables in
 the default is
 .BR debian/substvars .
 .TP
-.BI \-v
+.B \-v
 Enable verbose mode (since dpkg 1.14.8).
 Numerous messages are displayed to explain what
 .B dpkg\-shlibdeps
@@ -238,7 +239,7 @@ Ignore \fIpackage-build-dir\fP when looking for shlibs, symbols, and shared
 library files (since dpkg 1.18.5).
 You can use this option multiple times.
 .TP
-.BI \-\-ignore\-missing\-info
+.B \-\-ignore\-missing\-info
 Do not fail if dependency information can't be found for a shared library
 (since dpkg 1.14.8).
 Usage of this option is discouraged, all libraries should provide
@@ -263,7 +264,7 @@ The default location is \fI%ADMINDIR%\fP.
 .BR \-? ", " \-\-help
 Show the usage message and exit.
 .TP
-.BR \-\-version
+.B \-\-version
 Show the version and exit.
 .
 .SH ENVIRONMENT
@@ -294,7 +295,7 @@ binary. The \fIbinary\fR is most likely a library and it needs to be linked
 with an additional library during the build process (option
 \fB\-l\fR\fIlibrary\fR of the linker).
 .TP
-.IB binary " contains an unresolvable reference to symbol " sym ": it's probably a plugin
+.IB binary " contains an unresolvable reference to symbol " sym ": it's probably a plugin"
 The indicated symbol has not been found in the libraries linked with the
 binary. The \fIbinary\fR is most likely a plugin and the symbol is
 probably provided by the program that loads this plugin. In theory a

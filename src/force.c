@@ -91,7 +91,7 @@ static const struct forceinfo {
 		"hold",
 		FORCE_HOLD,
 		FORCETYPE_DISABLED,
-		N_("Process incidental packages even when on hold"),
+		N_("Install or remove incidental packages even when on hold"),
 	}, {
 		"not-root",
 		FORCE_NON_ROOT,
@@ -283,6 +283,8 @@ parse_force(const char *value, bool set)
 	const struct forceinfo *fip;
 
 	if (strcmp(value, "help") == 0) {
+		char *force_string = get_force_string();
+
 		printf(_(
 "%s forcing options - control behaviour when problems found:\n"
 "  warn but continue:  --force-<thing>,<thing>,...\n"
@@ -303,7 +305,9 @@ parse_force(const char *value, bool set)
 		printf(_(
 "\n"
 "Currently enabled options:\n"
-" %s\n"), get_force_string());
+" %s\n"), force_string);
+
+		free(force_string);
 
 		exit(0);
 	}

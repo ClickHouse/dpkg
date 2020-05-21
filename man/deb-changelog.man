@@ -23,12 +23,13 @@
 .\" along with this program.  If not, see <https://www.gnu.org/licenses/>.
 .
 .TH deb-changelog 5 "%RELEASE_DATE%" "%VERSION%" "dpkg suite"
+.ad l
 .nh
 .SH NAME
 deb\-changelog \- dpkg source packages' changelog file format
 .
 .SH SYNOPSIS
-changelog
+.B debian/changelog
 .
 .SH DESCRIPTION
 Changes in the packaged version of a project are explained in the
@@ -56,12 +57,18 @@ That format is a series of entries like this:
 .PP
 \fIpackage\fP and \fIversion\fP are the source package name and version
 number.
+\fIversion\fP is delimited by parenthesis U+00028 ‘\fB(\fP’ and
+U+0029 ‘\fB)\fP’.
 .PP
 \fIdistributions\fP lists one or more space-separated distributions where
 this version should be installed when it is uploaded; it is copied to the
 \fBDistribution\fP field in the \fI.changes\fP file.
+\fIdistributions\fP must be terminated by a semicolon (U+003B ‘\fB;\fP’).
 .PP
-\fImetadata\fP is a comma-separated list of \fIkeyword\fP=\fIvalue\fP items.
+\fImetadata\fP lists zero or more comma-separated \fIkeyword\fP=\fIvalue\fP
+items.
+Each keyword can contain only minus and case insensitive alphanumeric
+characters, as they need to be mapped to \fBdeb822\fP(5) field names.
 The only \fIkeyword\fPs currently supported by \fBdpkg\fP are \fBurgency\fP
 and \fBbinary\-only\fP.
 \fBurgency\fP's value is used for the \fBUrgency\fP field in the
@@ -71,7 +78,8 @@ changelog entry is for a binary-only non-maintainer upload (an automatic
 binary rebuild with the only change being the changelog entry).
 .PP
 The change details may in fact be any series of lines starting with
-at least two spaces, but conventionally each change starts with an
+at least two spaces (U+0020 \fBSPACE\fP), but conventionally each
+change starts with an
 asterisk and a separating space and continuation lines are indented
 so as to bring them in line with the start of the text above.
 Blank lines may be used here to separate groups of changes, if desired.
@@ -79,9 +87,9 @@ Blank lines may be used here to separate groups of changes, if desired.
 If this upload resolves bugs recorded in the distribution bug tracking
 system, they may be automatically closed on the inclusion of this
 package into the distribution archive by including the string:
-.nf
-  \fBCloses: Bug#\fP\fInnnnn\fP
-.fi
+.IP
+\fBCloses: Bug#\fP\fInnnnn\fP
+.PP
 in the change details (the exact Perl regular expression is
 \fB/closes:\\s*(?:bug)?\\#?\\s?\\d+(?:,\\s*(?:bug)?\\#?\\s?\\d+)*/i\fP).
 This information is conveyed via the \fBCloses\fP field in the \fI.changes\fP
@@ -111,7 +119,7 @@ Is a one- or two-digit day of the month (\fB01\fP-\fB31\fP).
 .TP
 .I month
 Is one of:
-.BR Jan ", " Feb ", " Mar ", " Apr ", " May ", " Jun ", " Jul ", " Aug ", "
+.BR Jan ", " Feb ", " Mar ", " Apr ", " May ", " Jun ", " Jul ", " Aug ,
 .BR Sep ", " Oct ", " Nov ", " Dec .
 .TP
 .I yyyy
@@ -137,9 +145,9 @@ The last two digits must be in the range \fB00\fP-\fB59\fP.
 The first “title” line with the package name must start at the left
 hand margin.
 The “trailer” line with the maintainer and date details must be
-preceded by exactly one space.
+preceded by exactly one space (U+0020 \fBSPACE\fP).
 The maintainer details and the date must be separated by exactly two
-spaces.
+spaces (U+0020 \fBSPACE\fP).
 .PP
 Any line that consists entirely (i.e., no leading whitespace) of \fB#\fP
 or \fB/* */\fP style comments or RCS keywords.
@@ -154,7 +162,7 @@ The entire changelog must be encoded in UTF-8.
 .TP
 .I debian/changelog
 .SH EXAMPLES
-.nf
+.EX
 dpkg (1.17.18) unstable; urgency=low
 
   [ Guillem Jover ]
@@ -170,9 +178,10 @@ dpkg (1.17.18) unstable; urgency=low
   * German (Sven Joachim).
 
  \-\- Guillem Jover <guillem@debian.org>  Sun, 12 Oct 2014 15:47:44 +0200
-.fi
+.EE
 .
 .SH SEE ALSO
+.BR deb822 (5),
 .BR deb\-version (7),
 .BR deb\-changes (5),
 .BR dpkg\-parsechangelog (1).

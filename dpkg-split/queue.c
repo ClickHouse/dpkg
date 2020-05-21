@@ -92,8 +92,12 @@ scandepot(void)
   struct partqueue *queue = NULL;
 
   depot = opendir(opt_depotdir);
-  if (!depot)
+  if (!depot) {
+    if (errno == ENOENT)
+      return NULL;
+
     ohshite(_("unable to read depot directory '%.250s'"), opt_depotdir);
+  }
   while ((de= readdir(depot))) {
     struct partqueue *pq;
     char *p;
@@ -152,15 +156,21 @@ do_auto(const char *const *argv)
   part = dpkg_ar_open(partfile);
   if (!part)
     ohshite(_("unable to read part file '%.250s'"), partfile);
-  if (!read_info(part, refi)) {
+  refi = read_info(part, refi);
+  dpkg_ar_close(part);
+
+  if (refi == NULL) {
     if (!opt_npquiet)
       printf(_("File '%.250s' is not part of a multipart archive.\n"), partfile);
     m_output(stdout, _("<standard output>"));
     return 1;
   }
-  dpkg_ar_close(part);
 
   queue = scandepot();
+  if (queue == NULL)
+    if (dir_make_path(opt_depotdir, 0755) < 0)
+      ohshite(_("cannot create directory %s"), opt_depotdir);
+
   partlist = nfmalloc(sizeof(*partlist) * refi->maxpartn);
   for (i = 0; i < refi->maxpartn; i++)
     partlist[i] = NULL;

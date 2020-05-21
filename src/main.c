@@ -194,7 +194,7 @@ int f_autodeconf=0, f_nodebsig=0;
 int f_triggers = 0;
 
 int errabort = 50;
-static const char *admindir = ADMINDIR;
+static const char *admindir;
 const char *instdir= "";
 struct pkg_list *ignoredependss = NULL;
 
@@ -350,9 +350,18 @@ is_invoke_action(enum action action)
   }
 }
 
-struct invoke_list pre_invoke_hooks = { .head = NULL, .tail = &pre_invoke_hooks.head };
-struct invoke_list post_invoke_hooks = { .head = NULL, .tail = &post_invoke_hooks.head };
-struct invoke_list status_loggers = { .head = NULL, .tail = &status_loggers.head };
+static struct invoke_list pre_invoke_hooks = {
+  .head = NULL,
+  .tail = &pre_invoke_hooks.head,
+};
+static struct invoke_list post_invoke_hooks = {
+  .head = NULL,
+  .tail = &post_invoke_hooks.head,
+};
+static struct invoke_list status_loggers = {
+  .head = NULL,
+  .tail = &status_loggers.head,
+};
 
 static void
 set_invoke_hook(const struct cmdinfo *cip, const char *value)
@@ -783,6 +792,7 @@ int main(int argc, const char *const *argv) {
   free_invoke_hooks(&post_invoke_hooks);
 
   dpkg_program_done();
+  dpkg_locales_done();
 
   return reportbroken_retexitstatus(ret);
 }

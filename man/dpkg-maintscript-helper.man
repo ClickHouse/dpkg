@@ -17,6 +17,7 @@
 .\" along with this program.  If not, see <https://www.gnu.org/licenses/>.
 .
 .TH dpkg\-maintscript\-helper 1 "%RELEASE_DATE%" "%VERSION%" "dpkg suite"
+.ad l
 .nh
 .SH NAME
 dpkg\-maintscript\-helper \- works around known dpkg limitations in maintainer scripts
@@ -26,15 +27,15 @@ dpkg\-maintscript\-helper \- works around known dpkg limitations in maintainer s
 .IR command " [" parameter "...] \fB\-\-\fP " maint-script-parameter ...
 .
 .SH COMMANDS AND PARAMETERS
-.P
+.TP
 \fBsupports\fP \fIcommand\fP
-.P
+.TQ
 \fBrm_conffile\fP \fIconffile\fP [\fIprior-version\fP [\fIpackage\fP]]
-.P
+.TQ
 \fBmv_conffile\fP \fIold-conffile\fP \fInew-conffile\fP [\fIprior-version\fP [\fIpackage\fP]]
-.P
+.TQ
 \fBsymlink_to_dir\fP \fIpathname\fP \fIold-target\fP [\fIprior-version\fP [\fIpackage\fP]]
-.P
+.TQ
 \fBdir_to_symlink\fP \fIpathname\fP \fInew-target\fP [\fIprior-version\fP [\fIpackage\fP]]
 .
 .SH DESCRIPTION
@@ -239,7 +240,11 @@ depends on the command used, for \fBrm_conffile\fP and \fBmv_conffile\fP
 it is 1.15.7.2, for \fBsymlink_to_dir\fP and \fBdir_to_symlink\fP
 it is 1.17.14:
 .P
-    \fBPre\-Depends:\fP dpkg (>= 1.17.14)
+.RS 4
+.EX
+Pre\-Depends: dpkg (>= 1.17.14)
+.EE
+.RE
 .P
 But in many cases the operation done by the program is not critical for
 the package, and instead of using a pre-dependency we can call the
@@ -263,5 +268,4 @@ The currently accepted values are: \fBauto\fP (default), \fBalways\fP and
 \fBnever\fP.
 .
 .SH SEE ALSO
-.ad l
 .BR dh_installdeb (1).

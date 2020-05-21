@@ -16,12 +16,13 @@
 .\" along with this program.  If not, see <https://www.gnu.org/licenses/>.
 .
 .TH deb\-postinst 5 "%RELEASE_DATE%" "%VERSION%" "dpkg suite"
+.ad l
 .nh
 .SH NAME
 deb\-postinst \- package post-installation maintainer script
 .
 .SH SYNOPSIS
-postinst
+.B DEBIAN/postinst
 .
 .SH DESCRIPTION
 A package can perform several post-installation actions via maintainer
@@ -33,8 +34,10 @@ The script can be called in the following ways:
 \fIpostinst\fP \fBconfigure\fP \fIold-version\fP
 After the package was installed.
 .TP
-\fIpostinst\fP \fBtriggered\fP \fItrigger-name...\fP
+\fIpostinst\fP \fBtriggered\fP "\fItrigger-name...\fP"
 After the package was triggered.
+The list of space-separated \fItrigger-name\fPs is passed as the second
+argument.
 .TP
 \fIold-postinst\fP \fBabort-upgrade\fP \fInew-version\fP
 If \fIprerm\fP fails during upgrade or fails on failed upgrade.

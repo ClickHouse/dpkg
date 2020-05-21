@@ -18,16 +18,20 @@
 .\" along with this program.  If not, see <https://www.gnu.org/licenses/>.
 .
 .TH deb\-src\-control 5 "%RELEASE_DATE%" "%VERSION%" "dpkg suite"
+.ad l
 .nh
 .SH NAME
 deb\-src\-control \- Debian source packages' master control file format
 .
 .SH SYNOPSIS
-debian/control
+.B debian/control
 .
 .SH DESCRIPTION
-Each Debian source package contains the master «control» file,
-which contains at least 2 paragraphs, separated by a blank line.
+Each Debian source package contains the master «\fBdebian/control\fP» file,
+and its format is a superset of the \fBcontrol\fP file shipped in Debian
+binary packages, see \fBdeb\-control\fP(5).
+.PP
+This file contains at least 2 paragraphs, separated by a blank line.
 The first paragraph lists
 all information about the source package in general, while each following
 paragraph describes exactly one binary package. Each paragraph consists of at
@@ -93,7 +97,7 @@ used format is \fIbts-type\fP\fB://\fP\fIbts-address\fP, like
 \fBdebbugs://bugs.debian.org\fP. This field is usually not needed.
 
 .TP
-.BR Rules\-Requires\-Root: " \fBno\fP|\fBbinary-targets\fP|\fIimpl-keywords\fP
+.BR Rules\-Requires\-Root: " \fBno\fP|\fBbinary-targets\fP|\fIimpl-keywords\fP"
 This field is used to indicate whether the \fBdebian/rules\fP file requires
 (fake)root privileges to run some of its targets, and if so when.
 .RS
@@ -443,8 +447,7 @@ recognized fields. To avoid such potential situation you can prefix those
 fields with \fBPrivate\-\fP, such as \fBXB\-Private\-New\-Field\fP.
 
 .SH EXAMPLE
-.\" .RS
-.nf
+.EX
 # Comment
 Source: dpkg
 Section: admin
@@ -477,9 +480,7 @@ Description: Debian package development tools
  .
  Most Debian source packages will require additional tools to build;
  for example, most packages need make and the C compiler gcc.
-.fi
-.\" .RE
-
+.EE
 
 .SH SEE ALSO
 .BR deb\-control (5),

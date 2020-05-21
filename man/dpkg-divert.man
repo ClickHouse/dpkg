@@ -19,6 +19,7 @@
 .\" along with this program.  If not, see <https://www.gnu.org/licenses/>.
 .
 .TH dpkg\-divert 1 "%RELEASE_DATE%" "%VERSION%" "dpkg suite"
+.ad l
 .nh
 .SH NAME
 dpkg\-divert \- override a package's version of a file
@@ -155,8 +156,8 @@ The currently accepted values are: \fBauto\fP (default), \fBalways\fP and
 File which contains the current list of diversions of the system. It is
 located in the \fBdpkg\fP administration directory, along with other files
 important to \fBdpkg\fP, such as \fIstatus\fP or \fIavailable\fP.
-.br
-Note: \fBdpkg\-divert\fP preserves the old copy of this file, with extension
+.IP
+\fBNote:\fP \fBdpkg\-divert\fP preserves the old copy of this file, with extension
 \fI\-old\fP, before replacing it with the new one.
 .
 .SH NOTES
@@ -176,22 +177,30 @@ library has the same SONAME as the undiverted one.
 To divert all copies of a \fI/usr/bin/example\fR to \fI/usr/bin/example.foo\fR,
 i.e. directs all packages providing \fI/usr/bin/example\fR to install it as
 \fI/usr/bin/example.foo\fR, performing the rename if required:
-.HP
+.PP
+.EX
 dpkg\-divert \-\-divert /usr/bin/example.foo \-\-rename /usr/bin/example
+.EE
 .PP
 To remove that diversion:
-.HP
+.PP
+.EX
 dpkg\-divert \-\-rename \-\-remove /usr/bin/example
-
+.EE
 .PP
 To divert any package trying to install \fI/usr/bin/example\fR to
 \fI/usr/bin/example.foo\fR, except your own \fIwibble\fR package:
-.HP
-dpkg\-divert \-\-package wibble \-\-divert /usr/bin/example.foo \-\-rename /usr/bin/example
+.PP
+.EX
+dpkg\-divert \-\-package wibble \-\-divert /usr/bin/example.foo \\
+    \-\-rename /usr/bin/example
+.EE
 .PP
 To remove that diversion:
-.HP
+.PP
+.EX
 dpkg\-divert \-\-package wibble \-\-rename \-\-remove /usr/bin/example
+.EE
 .
 .SH SEE ALSO
 .BR dpkg (1).

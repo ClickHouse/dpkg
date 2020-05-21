@@ -18,6 +18,7 @@
 .\" along with this program.  If not, see <https://www.gnu.org/licenses/>.
 .
 .TH deb\-changes 5 "%RELEASE_DATE%" "%VERSION%" "dpkg suite"
+.ad l
 .nh
 .SH NAME
 deb\-changes \- Debian changes file format
@@ -117,8 +118,8 @@ descriptions.
 If the upload is source-only, then the field is omitted (since dpkg 1.19.3).
 .TP
 .BI Closes: " bug-number-list"
-A space-separated list of bug report numbers that have been resolved with
-this upload.
+A space-separated list of bug report numbers for bug reports that have been
+resolved with this upload.
 The distribution archive software might use this field to automatically
 close the referred bug numbers in the distribution bug tracking system.
 .TP
@@ -177,13 +178,6 @@ the checksum, the file size, and the file name.
 These fields list all files that make up the upload.
 The list of files in these fields must match the list of files in the
 \fBFiles\fP field and the other related \fBChecksums\fP fields.
-.
-.\" .SH EXAMPLE
-.\" .RS
-.\" .nf
-.\"
-.\" .fi
-.\" .RE
 .
 .SH BUGS
 The \fBFiles\fP field is inconsistent with the other \fBChecksums\fP fields.

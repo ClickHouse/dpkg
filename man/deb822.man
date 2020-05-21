@@ -17,6 +17,7 @@
 .\" along with this program.  If not, see <https://www.gnu.org/licenses/>.
 .
 .TH deb822 5 "%RELEASE_DATE%" "%VERSION%" "dpkg suite"
+.ad l
 .nh
 .SH NAME
 deb822 \- Debian RFC822 control data format
@@ -60,9 +61,9 @@ immediately before or after the value and is ignored there; it is conventional
 to put a single space after the colon.
 For example, a field might be:
 .RS
-.nf
+.EX
 Package: dpkg
-.fi
+.EE
 .RE
 the field name is \fBPackage\fP and the field value \fBdpkg\fP.
 
@@ -128,12 +129,6 @@ These comment lines are ignored, even between two continuation lines.
 They do not end logical lines.
 
 All control files must be encoded in UTF-8.
-.
-.\" .SH EXAMPLE
-.\" .RS
-.\" .nf
-.\" .fi
-.\" .RE
 .
 .SH SEE ALSO
 .BR RFC822 ,

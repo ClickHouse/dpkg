@@ -16,12 +16,13 @@
 .\" along with this program.  If not, see <https://www.gnu.org/licenses/>.
 .
 .TH deb\-postrm 5 "%RELEASE_DATE%" "%VERSION%" "dpkg suite"
+.ad l
 .nh
 .SH NAME
 deb\-postrm \- package post-removal maintainer script
 .
 .SH SYNOPSIS
-postrm
+.B DEBIAN/postrm
 .
 .SH DESCRIPTION
 A package can perform several post-removal actions via maintainer

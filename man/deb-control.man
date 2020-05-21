@@ -20,16 +20,20 @@
 .\" along with this program.  If not, see <https://www.gnu.org/licenses/>.
 .
 .TH deb\-control 5 "%RELEASE_DATE%" "%VERSION%" "dpkg suite"
+.ad l
 .nh
 .SH NAME
 deb\-control \- Debian binary packages' master control file format
 .
 .SH SYNOPSIS
-control
+.B DEBIAN/control
 .
 .SH DESCRIPTION
-Each Debian binary package contains the master \fIcontrol\fP file, which
-contains a number of fields.
+Each Debian binary package contains a \fBcontrol\fP file in its \fBcontrol\fP
+member, and its format is a subset of the master \fBdebian/control\fP file in
+Debian source packages, see \fBdeb\-src\-control\fP(5).
+.PP
+This file contains a number of fields.
 Each field begins with a tag, such as
 .B Package
 or
@@ -95,7 +99,7 @@ fields usually have a defined set of accepted values based on the specific
 distribution policy.
 .
 .TP
-.BR Installed\-Size: " size"
+.BR Installed\-Size: " \fIsize\fP"
 The approximate total size of the package's installed files, in KiB units.
 .
 .TP
@@ -327,7 +331,7 @@ refuse to accept an upload which declares a
 relationship which cannot be satisfied within the archive.
 .
 .TP
-.BI Built\-For\-Profiles: " profile-list (obsolete)"
+.BR Built\-For\-Profiles: " \fIprofile-list\fP (obsolete)"
 This field used to specify a whitespace separated list of build profiles that
 this binary packages was built with (since dpkg 1.17.2 until 1.18.18).
 The information previously found in this field can now be found in the
@@ -350,8 +354,7 @@ of these within the package.
 The format or the way to compute each build-id is not defined by design.
 .
 .SH EXAMPLE
-.\" .RS
-.nf
+.EX
 Package: grep
 Essential: yes
 Priority: required
@@ -371,8 +374,7 @@ Description: GNU grep, egrep and fgrep.
  look at every character. The result is typically many times faster
  than Unix grep or egrep. (Regular expressions containing backreferencing
  will run more slowly, however).
-.fi
-.\" .RE
+.EE
 .
 .SH BUGS
 The \fBBuild\-Ids\fP field uses a rather generic name out of its original

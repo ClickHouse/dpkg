@@ -71,7 +71,7 @@ enum action {
 	ACTION_DISPLAY,
 };
 
-struct action_name {
+static struct action_name {
 	enum action action;
 	const char *name;
 } action_names[] = {
@@ -501,6 +501,36 @@ rename_mv(const char *src, const char *dst)
 		return true;
 
 	return false;
+}
+
+static int
+make_path(const char *pathname, mode_t mode)
+{
+	char *dirname, *slash;
+
+	dirname = xstrdup(pathname);
+
+	/* Find the first slash, and ignore it, as it will be either the
+	 * slash for the root directory, for the current directory in a
+	 * relative pathname or its parent. */
+	slash = strchr(dirname, '/');
+
+	while (slash != NULL) {
+		slash = strchr(slash + 1, '/');
+		if (slash)
+			*slash = '\0';
+
+		if (mkdir(dirname, mode) < 0 && errno != EEXIST) {
+			free(dirname);
+			return -1;
+		}
+		if (slash)
+			*slash = '/';
+	}
+
+	free(dirname);
+
+	return 0;
 }
 
 static void
@@ -1107,8 +1137,13 @@ altdb_get_namelist(struct dirent ***table)
 	int count;
 
 	count = scandir(admdir, table, altdb_filter_namelist, alphasort);
-	if (count < 0)
-		syserr(_("cannot scan directory '%.255s'"), admdir);
+	if (count < 0) {
+		if (errno != ENOENT)
+			syserr(_("cannot scan directory '%.255s'"), admdir);
+		/* The directory does not exist, proceed anyway. */
+		*table = NULL;
+		count = 0;
+	}
 
 	return count;
 }
@@ -1301,13 +1336,6 @@ alternative_load(struct alternative *a, enum altdb_flags flags)
 	char *master_link;
 
 	/* Initialize parse context */
-	if (setjmp(ctx.on_error)) {
-		if (ctx.fh)
-			fclose(ctx.fh);
-		free(ctx.filename);
-		alternative_reset(a);
-		return false;
-	}
 	ctx.modified = false;
 	ctx.flags = flags;
 	if (flags & ALTDB_LAX_PARSER)
@@ -1323,6 +1351,14 @@ alternative_load(struct alternative *a, enum altdb_flags flags)
 			return false;
 
 		syserr(_("unable to open file '%s'"), ctx.filename);
+	}
+
+	if (setjmp(ctx.on_error)) {
+		if (ctx.fh)
+			fclose(ctx.fh);
+		free(ctx.filename);
+		alternative_reset(a);
+		return false;
 	}
 
 	/* Verify the alternative is not empty. */
@@ -1412,6 +1448,12 @@ alternative_save(struct alternative *a)
 
 	ctx.filename = filenew;
 	ctx.fh = fopen(ctx.filename, "w");
+	if (ctx.fh == NULL && errno == ENOENT) {
+		if (make_path(admdir, 0755) < 0)
+			syserr(_("cannot create administrative directory '%s'"),
+			       admdir);
+		ctx.fh = fopen(ctx.filename, "w");
+	}
 	if (ctx.fh == NULL)
 		syserr(_("unable to create file '%s'"), ctx.filename);
 
@@ -2708,7 +2750,7 @@ main(int argc, char **argv)
 			const char *slink, *sname, *spath;
 			struct slave_link *sl;
 
-			if (action == ACTION_NONE || action != ACTION_INSTALL)
+			if (action != ACTION_INSTALL)
 				badusage(_("--slave only allowed with --install"));
 			if (MISSING_ARGS(3))
 				badusage(_("--slave needs <link> <name> <path>"));

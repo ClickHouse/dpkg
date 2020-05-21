@@ -17,15 +17,19 @@
 .\" along with this program.  If not, see <https://www.gnu.org/licenses/>.
 .
 .TH deb\-shlibs 5 "%RELEASE_DATE%" "%VERSION%" "dpkg suite"
+.ad l
 .nh
 .SH NAME
 deb\-shlibs \- Debian shared library information file
+.
+.SH SYNOPSIS
+.BR debian/shlibs ", " debian/ \fIbinary-name\fP .shlibs ", " DEBIAN/shlibs
 .
 .SH DESCRIPTION
 .PP
 .B shlibs
 files map shared library names and versions
-.RI ( sonames )
+.RI ( SONAMEs )
 to dependencies suitable for a package control file.  There is one
 entry per line. Blank lines are \fBnot\fP allowed.  Lines beginning
 with an \fB#\fP character are considered commentary, and are ignored.
@@ -43,17 +47,29 @@ but the \fIdependencies\fP field extends to the end of the line.  The
 The \fIdependencies\fP field has the same syntax as the \fBDepends\fP
 field in a binary control file, see \fBdeb\-control\fP(5).
 .
+.SH SONAME FORMATS
+The SONAME formats supported are:
+.IP
+\fIname\fP.so.\fIversion\fP
+.PP
+and
+.IP
+\fIname\fP-\fIversion\fP.so
+.PP
+where \fIname\fP is usually prefixed by \fBlib\fP.
 .SH EXAMPLES
 .PP
 The
 .B shlibs
 file for a typical library package, named
 .IR libcrunch1 ,
-that provides one library whose soname is
+that provides one library whose SONAME is
 .IR libcrunch.so.1 ,
 might read
 .IP
+.EX
 libcrunch 1 libcrunch1 (>= 1.2-1)
+.EE
 .PP
 The \fIdependencies\fP
 must mention the most recent version of the package that added new
