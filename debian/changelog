@@ -1,4 +1,128 @@
-dpkg (1.20.1) UNRELEASED; urgency=medium
+dpkg (1.20.6) UNRELEASED; urgency=medium
+
+  *
+
+ -- Guillem Jover <guillem@debian.org>  Wed, 08 Jul 2020 05:52:04 +0200
+
+dpkg (1.20.5) unstable; urgency=medium
+
+  [ Guillem Jover ]
+  * Revert change to prefix the specs file spec string self_spec with +
+    instead of *. The prefix is supposed to go in the text itself
+    instead of the spec name, which already had it. This change only
+    apparently fixed the issue at hand because gcc started parsing it as
+    the «[SUFFIX]:» case, completely disabling the PIE handling.
+    Thanks to Thorsten Glaser <tg@mirbsd.de>.
+  * Perl modules:
+    - Dpkg::Source::Package::V1: Explicitly initialize constructor options to
+      their implicit values, otherwise other code end up assuming different
+      defaults. This is required here too as this class does not call the
+      initialization from its parent.
+  * Build system:
+    - Detect the GNU program variants for make, patch and tar in the CPAN
+      distribution to replace in the Dpkg module.
+    - Set DEB_BUILD_ARCH to a dummy “amd64” in the CPAN distribution tests
+      to not require a dpkg(1) in the system.
+  * Test suite:
+    - Only print the Dpkg::Path::check_directory_traversal() error on failure.
+
+  [ Updated scripts translations ]
+  * German (Helge Kreutzmann).
+
+ -- Guillem Jover <guillem@debian.org>  Wed, 08 Jul 2020 05:40:39 +0200
+
+dpkg (1.20.4) unstable; urgency=medium
+
+  [ Guillem Jover ]
+  * Improve PIE flags support:
+    - Prefix the specs file spec string self_spec with + instead of *.
+      This way we do not override any previous setting, otherwise when
+      passing the -specs options twice (f.ex. to compile and link), only the
+      last one will take effect, which can break the build. Closes: #870383
+  * Perl modules:
+    - Dpkg::Source::Package: Explicitly initialize constructor options to
+      their implicit values, otherwise other code end up assuming different
+      defaults. Closes: #964017
+    - Dpkg::OpenPGP: Use a temporary directory for the GnuPG homedir in
+      verify_signature(), to make sure we do not write to the user home
+      directory, except for the trustkeys.db file if present.
+    - Dpkg::Path: Refactor new check_directory_traversal() function out of
+      Dpkg::Source::Package->extract().
+    - Dpkg::Path: Do not do partial matches for directory traversal checks,
+      expect a trailing slash after the base directory name.
+    - Dpkg::Path: Catch uncanonicanizable pathnames with a proper error.
+      Closes: #964111
+    - Dpkg::Path: Do not consider missing symlink targets a directory
+      traversal attempt. Closes: #964234
+    - Dpkg::Path: Allow /dev/null for directory traversals.
+      Reported by Holger Levsen <holger@layer-acht.org>.
+  * Build system:
+    - Add Module::Signature as configure recommends for CPAN.
+  * Test suite:
+    - Use File::Path::make_path() instead of chained mkdir() in Dpkg_Path.t.
+    - Add unit tests for Dpkg::Path::check_directory_traversal().
+
+  [ Updated programs translations ]
+  * German (Sven Joachim).
+
+ -- Guillem Jover <guillem@debian.org>  Tue, 07 Jul 2020 07:57:48 +0200
+
+dpkg (1.20.3) unstable; urgency=medium
+
+  [ Guillem Jover ]
+  * Perl modules:
+    - Dpkg::OpenPGP: Pass --no-options to gpg in verify_signature().
+      Reported by Bertrand Marc <bmarc@debian.org>. Closes: #963839
+    - Dpkg::Build::Info: Clarify by giving context to the
+      get_build_env_whitelist() deprecation warning. Closes: #963844
+      Reported by Sven Joachim <svenjoac@gmx.de>.
+    - Dpkg::Source::Package: Fix check_original_tarball_signature() to make
+      import_key() honor require_valid_signature, which should default to
+      false. Reported by Mattia Rizzolo <mattia@debian.org>.
+    - Dpkg::OpenPGP: Use a temporary directory for the GnuPG homedir in
+      import_key(), to make sure we do not write to the user home directory,
+      which might be read-only or non-existent. Closes: #963944
+      Reported by Mattia Rizzolo <mattia@debian.org>.
+  * Code internals:
+    - libdpkg: Print a notice if we cannot write to the log file.
+  * Build system:
+    - Improve error diagnosis for configure version fetching script.
+      Prompted by Norbert Preining <norbert@preining.info>.
+
+  [ Updated programs translations ]
+  * German (Sven Joachim).
+
+ -- Guillem Jover <guillem@debian.org>  Mon, 29 Jun 2020 12:37:51 +0200
+
+dpkg (1.20.2) unstable; urgency=medium
+
+  * dpkg: Do not include the architecture with --robot --version.
+  * update-alternatives: Create alternatives directory (/etc/alternatives)
+    if it is missing, to help with installation bootstrapping.
+    Reported by Johannes Schauer <josch@debian.org>.
+  * update-alternatives: Create the log directory if it is missing.
+  * Perl modules:
+    - Dpkg::Source::Package: Turn the missing expected tarball signature
+      error into a warning for now, as it is causing unintended fallout,
+      and does not play nice (yet) with tarballs repackaged by uscan(1).
+      Closes: #963821
+  * Code internals:
+    - update-alternatives: Move log_msg() after make_path() so that we can use
+      the latter.
+    - update-alternatives: Add new xstrndup() and xdirname() functions.
+  * Build system:
+    - Set SHELL in the test environment.
+    - Do not fail if po4a is not found, and search for it just once.
+    - Fix name and section generation for translated man pages. This caused
+      pod2man to get an empty --name argument and not output anything,
+      resulting in generating empty man pages. Closes: #963794
+  * Packaging:
+    - Sort debian/dpkg-dev.manpages.
+    - Install deb-src-symbols(5) in dpkg-dev package.
+
+ -- Guillem Jover <guillem@debian.org>  Sun, 28 Jun 2020 00:42:11 +0200
+
+dpkg (1.20.1) unstable; urgency=medium
 
   [ Guillem Jover ]
   * Fix dpkg logging regression introduced in 1.20.0:
@@ -16,6 +140,42 @@ dpkg (1.20.1) UNRELEASED; urgency=medium
     Prompted by Felix Lechner <felix.lechner@lease-up.com>.
   * dpkg-deb, dpkg: Do not accept relative pathnames in DEBIAN/conffiles.
     Reported by Niels Thykier <niels@thykier.net>.
+  * dpkg-split: Fix off-by-one check in ar header padding, that was making
+    parsing error out on valid archives. Regression introduced in dpkg 1.18.8.
+  * libdpkg: Fix error message for ending version character in dependency
+    parser:
+    - Move the version unterminated case before the catchall.
+    - Print the actual wrong character and print what is expected.
+  * libdpkg: Do not use econtext->errmsg on out of context abort, as it might
+    be uninitialized.
+  * update-alternatives: Set the umask to 022 on program start.
+    Reported by Paul Wise <pabs@debian.org>.
+  * dpkg-parsechangelog: Fix --show-field for multiline fields. We were not
+    stripping trailing whitespace, and were not prefixing empty lines with
+    a ‘.’, like when printing with the field names.
+    Reported by Paul Wise <pabs@debian.org>.
+  * dpkg: Add a new --robot option to be used with --version.
+  * dpkg, dpkg-query: Document missing options in --help output.
+  * Unify ellipsis formatting in programs --help output.
+  * Add Protected field support.
+  * dpkg-realpath: New program, to be used by dpkg-maintscript-helper, and
+    any maintainer script that needs a realpath that can handle pathnames
+    relative to the dpkg root directory.
+  * dpkg-realpath: Add support for DPKG_ROOT.
+    Thanks to Helmut Grohne <helmut@subdivi.de>.
+  * dpkg-realpath: Add support for --root and --instdir options.
+  * dpkg-maintscript-helper: Add support for DPKG_ROOT:
+    - Add DPKG_ROOT support for conffiles.
+      Thanks to David Kalnischkies <david@kalnischkies.de>.
+    - Add DPKG_ROOT support for symlink to and from directory switches.
+      Based on a patch by Bastien ROUCARIÈS <roucaries.bastien@gmail.com>.
+    Closes: #832176
+  * update-alternatives: Add DPKG_ROOT support, and new --root and --instdir
+    options. Closes: #871808
+  * Portability:
+    - libdpkg: When using uselocale(), include <xlocale.h> for locale_t if
+      the header is available. Needed on BSDs.
+      Reported by Sirio Balmelli <sirio@b-ad.ch>.
   * Perl modules:
     - Dpkg: Add a LICENSE section to the POD.
     - Dpkg::Source::Package: Add new get_upstream_signing_key() method.
@@ -23,6 +183,10 @@ dpkg (1.20.1) UNRELEASED; urgency=medium
     - Dpkg::Source::Package::V1: Check version format matching source format.
     - Dpkg::Vendor::Debian: Add debian-nonupload.gpg keyring.
       Thanks to Taowa Munene-Tardif <taowa@debian.org>. Closes: #956055
+    - Dpkg::Vendor::Debian: Detect merged-usr-via-symlinks also with absolute
+      pathnames. Reported by Adam Borowski <kilobyte@angband.pl>.
+    - Dpkg::Build::Info: Avoid whitelist in function name.
+    - Dpkg::Shlibs::SymbolFile: Avoid blacklist and whitelist terms.
   * Documentation:
     - man: Fix misused two-fonts macros.
       Thanks to Bjarni Ingi Gislason <bjarniig@rhi.hi.is>. Closes: #955028
@@ -56,25 +220,70 @@ dpkg (1.20.1) UNRELEASED; urgency=medium
     - man: Fix indentation for a note admonition in dpkg-scansources(1).
     - man: Document that a 3.0 (quilt) patch cannot create or modify symlinks.
       Thanks to Johannes Schauer <josch@debian.org>.
+    - man: Reword text to reduce length in verbatim code block.
+    - man: Add semicolons before verbatim code blocks.
+    - man: Update dselect methods provided. Several got removed in 1.20.0.
+    - man: The Installed-Size field does not get its value from du(1) since
+      1.18.0.
+    - man: Fix dpkg-gencontrol -P description to not refer to dpkg-source.
+      Reported by Jakub Wilk <jwilk@jwilk.net>.
+    - man: Place description of override value column on its own paragraph.
+    - man: Surround markup within verbatim blocks with .nf/.fi.
+    - man: Balance font markup.
+    - man: Do not nest font markup.
+    - man: Use .ig/.. macros to disable text instead of commenting it out.
+    - man: Do not mark end of sentence period with bold.
+    - man: Add a missing comma after man page reference in SEE ALSO section.
+    - man: Convert man pages from roff to POD.
+    - man: Clarify the dpkg --no-act admonition.
+    - man: Avoid whitelist term in dpkg-source man page.
   * Code internals:
     - Use $() in shell or qx() in perl instead of ``.
+    - dpkg-split: Switch part number variables from unsigned int to int.
+    - scripts: Refactor shell error handling into a shell library
+    - Reformat shell code to follow the coding style.
+    - update-alternatives: Parametrize option names in output strings.
+    - update-alternatives: Move logging function close to output functions.
+    - update-alternatives: Move argument parsing functions close to main().
+    - update-alternatives: Add general purpose non-failing functions for
+      administrative directory access.
+    - update-alternatives: Add filesystem abstraction functions.
   * Build system:
     - Handle .git being a plain file when getting the dpkg tree version.
     - Add debian/changelog as a Changes file to the CPAN distribution.
     - Set DPKG_SERIES to 1.20.x when running the functional test suite.
-    - Change po4a --porefs argument from no longer supported “noline,wrap”
-      to “file”.
+    - When using po4a require at least po4a 0.59. Change the po4a --porefs
+      argument from no longer supported “noline,wrap” to “file”, as wrapping
+      is the default since po4a 0.58. We require po4a 0.59 as 0.58 had a
+      regression in its --srcdir support.
     - Switch to set the po4a addendum in the po4a_paths section instead of
       repeating it for each man page.
+    - Use po4a conditional addendum support, and remove empty addenda.
+    - Use po4a mode=eof support in addenda.
+    - Do not use make prerequisites on suffix rule definitions.
+      Closes: #961850
+    - Add man page number suffixes to the automake SUFFIXES variable.
+    - Update false positive suppressions for cppcheck 2.1.
+    - Install specifications and API contracts in docdir.
+    - Add support for switching man pages from roff to POD format.
+    - Fix shell files substitution for version variable.
   * Packaging:
     - Switch to debhelper compatibility level 13.
     - Remove debian/tmp prefix from manpages debhelper fragment files.
     - Handle missing localized man pages gracefully.
+    - Install AUTHORS, THANKS, usertags, README.api and
+      README.feature-removal-schedule only in dpkg.deb.
+    - Rename debian/usertags to debian/README.bug-usertags.
+    - Install specifications to /usr/share/doc/dpkg/ in the dpkg-dev package.
+    - Detect merged-usr-via-symlinks also with absolute pathnames in
+      bug-script. Reported by Adam Borowski <kilobyte@angband.pl>.
   * Test suite:
     - Rename deb-content test cases to make them more descriptive.
+    - Skip autogenerated files from codespell.
 
   [ Updated programs translations ]
   * German (Sven Joachim).
+  * Simplified Chinese (Boyuan Yang). Closes: #958437
 
   [ Updated scripts translations ]
   * German (Helge Kreutzmann).
@@ -82,7 +291,7 @@ dpkg (1.20.1) UNRELEASED; urgency=medium
   [ Updated man pages translations ]
   * German (Helge Kreutzmann).
 
- -- Guillem Jover <guillem@debian.org>  Sun, 08 Mar 2020 03:57:25 +0100
+ -- Guillem Jover <guillem@debian.org>  Sat, 27 Jun 2020 02:41:48 +0200
 
 dpkg (1.20.0) experimental; urgency=medium
 
@@ -92,7 +301,7 @@ dpkg (1.20.0) experimental; urgency=medium
   * perl: Switch Getopt::Long from bundling to bundling_values. This means
     the few scripts using Getopt::Long will stop accepting options in the
     form «-ab» for «-a -b», which is not future-proof, as it does not allow
-    these options to get new arguments without making them abiguous.
+    these options to get new arguments without making them ambiguous.
   * dpkg-buildpackage: Remove transient backwards R³ compatibility code.
   * buildtools.mk: Add support for nostrip in DEB_BUILD_OPTIONS when setting
     the STRIP variable.
@@ -191,7 +400,7 @@ dpkg (1.20.0) experimental; urgency=medium
     - Dpkg::Exit: Hide internal lowercase @handlers variable.
     - Dpkg::Gettext: Remove obsolete _g() function.
     - Dpkg::Source::Package: Hide internal lowercase variable
-      @tar_ignore_default_pattern. Remove iternal lowercase variable alias
+      @tar_ignore_default_pattern. Remove internal lowercase variable alias
       $diff_ignore_default_regexp.
     - Dpkg::Substvars: Remove obsolete no_warn() method.
     - Dpkg::Index: Change default value for unique_tuple_key to 1.
@@ -249,7 +458,7 @@ dpkg (1.20.0) experimental; urgency=medium
     - libdpkg: Add new versiondescribe_c() to force a C locale.
     - dselect: Make baselist::draw_column_*() col arguments const.
     - libdpkg: Use p instead of name in dpkg_arch_name_is_illegal().
-    - dpkg: Remove redudant condition for sourcefile in updateavailable().
+    - dpkg: Remove redundant condition for sourcefile in updateavailable().
     - dpkg, update-alternatives: Make variables static.
     - libdpkg: Add missing symbols to the version map.
     - libdpkg: Fix fiemap memory layout usage that confuses gcc 10 to emit a
@@ -260,7 +469,7 @@ dpkg (1.20.0) experimental; urgency=medium
       This suppresses a gcc warning.
     - dpkg: Fix short lived memory leak in --force-help handling.
     - dpkg-split: Fix short lived file descriptor leak in --auto.
-    - start-stop-daemon: Explicitly ignore uninmportant function return values.
+    - start-stop-daemon: Explicitly ignore unimportant function return values.
     - start-stop-daemon: Fix memory leak on multiple --chuid arguments.
     - start-stop-daemon: Close the notification socket in the child.
     - libdpkg: Fix memory leaks in zlib and bz2 decompression functions.
@@ -9639,7 +9848,7 @@ dpkg (1.13.0) experimental; urgency=low
   * Remove SGML and POD documentation formats due to both licensing and
     sanity issues.  Closes: #285806.
   * The dpkg-doc and dpkg-static packages are no more.
-  * dpkg.cfg cleaned up to remove non-useful examples.
+  * dpkg.cfg cleaned up to remove useless examples.
     Closes: #169618, #305192.
 
  -- Scott James Remnant <scott@netsplit.com>  Fri, 14 Jan 2005 19:28:00 +0000
