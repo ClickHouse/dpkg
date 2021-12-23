@@ -52,7 +52,7 @@ printversion(const struct cmdinfo *cip, const char *value)
 {
   printf(_("Debian '%s' package archive backend version %s, from repo "
            "https://github.com/ClickHouse-Extras/dpkg.\n"),
-         BACKEND, "1.19.7-clickhouse");
+         BACKEND, "1.21.1-clickhouse");
   printf(_(
 "This is free software; see the GNU General Public License version 2 or\n"
 "later for copying conditions. There is NO warranty.\n"));
