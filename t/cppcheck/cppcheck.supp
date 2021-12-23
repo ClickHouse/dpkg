@@ -8,6 +8,9 @@ varFuncNullUB
 // TODO: While perhaps valid there are many to handle right away.
 variableScope
 
+// TODO: While perhaps valid there are many to handle right away.
+constParameter
+
 // Ignore, this is an imported module.
 unusedStructMember:lib/compat/obstack.c
 nullPointerArithmetic:lib/compat/obstack.c
@@ -36,20 +39,21 @@ constVariable:dselect/pkgsublist.cc:111
 syntaxError:lib/dpkg/t/*.c
 
 // BUG: False positive, the loop does an early exit.
-identicalInnerCondition:lib/dpkg/fsys-hash.c:100
+identicalInnerCondition:lib/dpkg/fsys-hash.c:96
 
 // BUG: False positive, the macros from lib/dpkg/dlist.h use the tail member.
 unusedStructMember:lib/dpkg/triglib.c:378
 
 // BUG: False positive, does not understand non-returning functors.
-negativeIndex:dpkg-deb/build.c
+negativeIndex:src/deb/build.c
 nullPointerArithmeticRedundantCheck:lib/dpkg/db-fsys-files.c
 nullPointerArithmeticRedundantCheck:lib/dpkg/db-fsys-override.c
-nullPointerRedundantCheck:dpkg-deb/build.c
+nullPointerRedundantCheck:src/deb/build.c
 nullPointerRedundantCheck:lib/dpkg/db-fsys-override.c
+nullPointerRedundantCheck:lib/dpkg/options.c
 nullPointerRedundantCheck:lib/dpkg/ehandle.c
-nullPointerRedundantCheck:src/enquiry.c
-nullPointerRedundantCheck:src/unpack.c
+nullPointerRedundantCheck:src/main/enquiry.c
+nullPointerRedundantCheck:src/main/unpack.c
 nullPointerRedundantCheck:utils/update-alternatives.c:1193
 doubleFree:utils/update-alternatives.c:1248
 
@@ -58,3 +62,6 @@ va_end_missing:lib/dpkg/parsehelp.c:68
 
 // BUG: False positive, due to our local va_copy().
 va_list_usedBeforeStarted:lib/compat/vasprintf.c
+
+// BUG: False positive, SIGWINCH is not a fatal signal.
+unreachableCode:dselect/basecmds.cc:123

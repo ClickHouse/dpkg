@@ -356,7 +356,7 @@ sub do_build {
         error(g_('non-native package version does not contain a revision'))
             if $v->is_native();
     } else {
-        # FIXME: This will become fatal in the near future.
+        # TODO: This will become fatal in the near future.
         warning(g_('native package version may not have a revision'))
             unless $v->is_native();
     }
@@ -433,6 +433,7 @@ sub do_build {
         info(g_('building %s using existing %s'), $sourcepackage, $tarsign);
         $self->add_file($tarsign);
 
+        info(g_('verifying %s using existing %s'), $tarname, $tarsign);
         $self->check_original_tarball_signature($dir, $tarsign);
     } else {
         my $key = $self->get_upstream_signing_key($dir);

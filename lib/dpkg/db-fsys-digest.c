@@ -64,7 +64,7 @@ write_filehash_except(struct pkginfo *pkg, struct pkgbin *pkgbin,
 
 		if (mask && (namenode->flags & mask))
 			continue;
-		if (strcmp(namenode->newhash, EMPTYHASHFLAG) == 0)
+		if (namenode->newhash == NULL)
 			continue;
 
 		fprintf(file->fp, "%s  %s\n",
@@ -121,7 +121,7 @@ parse_filehash_buffer(struct varbuf *buf,
 			ohshit(_("control file '%s' for package '%s' "
 			         "contains empty filename"), HASHFILE, pkgname);
 
-		debug(dbg_eachfiledetail, "load hash '%s' for filename '%s'",
+		debug(dbg_eachfiledetail, "load digest '%s' for filename '%s'",
 		      thisline, filename);
 
 		/* Add the file to the list. */

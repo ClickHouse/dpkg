@@ -20,9 +20,12 @@ set -e
 
 PROGNAME=$(basename "$0")
 version="unknown"
+EOL="\n"
 
-PKGDATADIR="${DPKG_DATADIR:-scripts}"
+PKGDATADIR_DEFAULT=scripts
+PKGDATADIR="${DPKG_DATADIR:-$PKGDATADIR_DEFAULT}"
 
+# shellcheck source=scripts/sh/dpkg-error.sh
 . "$PKGDATADIR/sh/dpkg-error.sh"
 
 show_version()
@@ -41,10 +44,11 @@ show_usage()
 Usage: $PROGNAME [<option>...] <pathname>
 
 Options:
-       --instdir <directory>    set the root directory.
-       --root <directory>       set the root directory.
-       --version                show the version.
-  -?,  --help                   show this help message.
+  -z, --zero                   end output line with NUL, not newline.
+      --instdir <directory>    set the root directory.
+      --root <directory>       set the root directory.
+      --version                show the version.
+  -?, --help                   show this help message.
 END
 }
 
@@ -66,10 +70,6 @@ canonicalize() {
      src=${src#/}
   done
   while [ -n "$src" ]; do
-    loop=$((loop + 1))
-    if [ "$loop" -gt 25 ]; then
-      error "too many levels of symbolic links"
-    fi
     # Get the first directory component.
     prefix=${src%%/*}
     # Remove the first directory component from src.
@@ -85,10 +85,14 @@ canonicalize() {
     elif [ "$prefix" = .. ]; then
       # Go up one directory.
       result=${result%/*}
-      if [ "${result#"$root"}" = "$result" ]; then
+      if [ -n "$root" ] && [ "${result#"$root"}" = "$result" ]; then
         result="$root"
       fi
     elif [ -h "$result/$prefix" ]; then
+      loop=$((loop + 1))
+      if [ "$loop" -gt 25 ]; then
+        error "too many levels of symbolic links"
+      fi
       # Resolve the symlink within $result.
       dst=$(readlink "$result/$prefix")
       case "$dst" in
@@ -113,7 +117,7 @@ canonicalize() {
   done
   # We are done, print the resolved pathname, w/o $root.
   result="${result#"$root"}"
-  echo "${result:-/}"
+  printf "%s$EOL" "${result:-/}"
 }
 
 setup_colors
@@ -123,6 +127,9 @@ export DPKG_ROOT
 
 while [ $# -ne 0 ]; do
   case "$1" in
+  -z|--zero)
+    EOL="\0"
+    ;;
   --instdir|--root)
     shift
     DPKG_ROOT=$1
@@ -164,7 +171,7 @@ fi
 
 [ -n "$pathname" ] || badusage "missing pathname"
 if [ "${pathname#"$DPKG_ROOT"}" != "$pathname" ]; then
-  error "link includes root prefix"
+  error "link '$pathname' includes root prefix '$DPKG_ROOT'"
 fi
 
 canonicalize "$pathname"

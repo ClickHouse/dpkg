@@ -22,6 +22,7 @@
 #define LIBDPKG_TEST_H
 
 #include <string.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -31,6 +32,8 @@
 #define TEST_MAIN_CTOR push_error_context()
 #define TEST_MAIN_DTOR pop_error_context(ehflag_normaltidy)
 #endif
+
+DPKG_BEGIN_DECLS
 
 /**
  * @defgroup dpkg_test Test suite support
@@ -60,6 +63,14 @@ test_alloc(void *ptr, const char *reason)
 #define test_alloc(ptr) \
 	test_alloc((ptr), "cannot allocate memory for " #ptr " in " __FILE__ ":" test_stringify(__LINE__))
 
+#define test_try(jmp) \
+	push_error_context_jump(&(jmp), NULL, "test try"); \
+	if (!setjmp((jmp)))
+#define test_catch \
+	else
+#define test_finally \
+	pop_error_context(ehflag_normaltidy);
+
 static inline const char *
 test_get_envdir(const char *envvar)
 {
@@ -72,10 +83,19 @@ test_get_envdir(const char *envvar)
 #define test_get_builddir() \
 	test_get_envdir("builddir")
 
+static inline bool
+test_is_verbose(void)
+{
+	const char *verbose = getenv("TEST_VERBOSE");
+	return verbose != NULL && strcmp(verbose, "1") == 0;
+}
+
+#ifndef TEST_OMIT_VARIABLES
 static int test_id = 1;
 static int test_skip_code;
 static const char *test_skip_prefix;
 static const char *test_skip_reason;
+#endif
 
 #define test_plan(n) \
 	printf("1..%d\n", n);
@@ -136,6 +156,8 @@ static const char *test_skip_reason;
 	} while (0)
 
 /** @} */
+
+DPKG_END_DECLS
 
 #define TEST_ENTRY(name) \
 static void name(void); \

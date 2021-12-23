@@ -464,6 +464,10 @@ tar_extractor(struct tar_archive *tar)
 
 		if (tar_header_decode((struct tar_header *)buffer, &h, &tar->err) < 0) {
 			if (h.name[0] == '\0') {
+				/* The checksum failed on the terminating
+				 * End Of Tape block entry of zeros. */
+				dpkg_error_destroy(&tar->err);
+
 				/* End Of Tape. */
 				status = 0;
 			} else {
@@ -474,11 +478,15 @@ tar_extractor(struct tar_archive *tar)
 		}
 		if (h.type != TAR_FILETYPE_GNU_LONGLINK &&
 		    h.type != TAR_FILETYPE_GNU_LONGNAME) {
-			if (next_long_name)
+			if (next_long_name) {
+				free(h.name);
 				h.name = next_long_name;
+			}
 
-			if (next_long_link)
+			if (next_long_link) {
+				free(h.linkname);
 				h.linkname = next_long_link;
+			}
 
 			next_long_link = NULL;
 			next_long_name = NULL;

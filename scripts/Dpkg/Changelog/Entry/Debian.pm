@@ -88,13 +88,15 @@ my $regex_trailer = qr<
 >xo;
 
 my %week_day = map { $_ => 1 } qw(Mon Tue Wed Thu Fri Sat Sun);
-my %month_abbrev = map { $_ => 1 } qw(
+my @month_abbrev = qw(
     Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec
 );
-my %month_name = map { $_ => } qw(
+my %month_abbrev = map { $_ => 1 } @month_abbrev;
+my @month_name = qw(
     January February March April May June July
     August September October November December
 );
+my %month_name = map { $month_name[$_] => $month_abbrev[$_] } 0 .. 11;
 
 =head1 METHODS
 
@@ -224,7 +226,7 @@ sub parse_trailer {
 	        # We have to nest the conditionals because May is the same in
 	        # full and abbreviated forms!
 	        if (exists $month_name{$8}) {
-	            push @errors, sprintf(g_('uses full instead of abbreviated month name \'%s\''),
+	            push @errors, sprintf(g_('uses full \'%s\' instead of abbreviated month name \'%s\''),
 	                                  $8, $month_name{$8});
 	        } else {
 	            push @errors, sprintf(g_('invalid abbreviated month name \'%s\''), $8);

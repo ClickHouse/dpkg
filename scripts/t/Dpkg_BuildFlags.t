@@ -16,9 +16,11 @@
 use strict;
 use warnings;
 
-use Test::More tests => 26;
+use Test::More tests => 28;
 
 BEGIN {
+    $ENV{DEB_BUILD_ARCH} = 'amd64';
+    $ENV{DEB_HOST_ARCH} = 'amd64';
     use_ok('Dpkg::BuildFlags');
 }
 
@@ -68,6 +70,9 @@ my %known_features = (
         fixdebugpath
         fixfilepath
         timeless
+    ) ],
+    optimize => [ qw(
+        lto
     ) ],
     sanitize => [ qw(
         address

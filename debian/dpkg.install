@@ -1,7 +1,8 @@
-../dpkg.cfg etc/dpkg
+debian/dpkg.cfg etc/dpkg
 
 etc/dpkg/dpkg.cfg.d
 etc/alternatives
+sbin/dpkg-fsys-usrunmess usr/sbin/
 sbin/start-stop-daemon
 usr/bin/dpkg
 usr/bin/dpkg-deb
@@ -13,6 +14,7 @@ usr/bin/dpkg-split
 usr/bin/dpkg-statoverride
 usr/bin/dpkg-trigger
 usr/bin/update-alternatives
+usr/lib/dpkg/dpkg-db-backup usr/libexec/dpkg/
 usr/share/dpkg/*table
 usr/share/dpkg/sh/dpkg-error.sh
 usr/share/lintian/profiles

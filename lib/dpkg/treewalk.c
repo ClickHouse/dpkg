@@ -274,6 +274,7 @@ static void
 treenode_free_node(struct treenode *node)
 {
 	free(node->pathname);
+	free(node->stat);
 	free(node);
 }
 
@@ -362,7 +363,7 @@ treeroot_visit_node(struct treeroot *tree, struct treenode *node)
  */
 struct treeroot *
 treewalk_open(const char *rootdir, enum treewalk_options options,
-              struct treewalk_funcs *func)
+              const struct treewalk_funcs *func)
 {
 	struct treeroot *tree;
 	struct treenode *root;
@@ -436,6 +437,10 @@ treewalk_next(struct treeroot *tree)
 {
 	struct treenode *node;
 
+	/* Handle rootless trees, such as uninitialized or fully traversed. */
+	if (tree->rootnode == NULL)
+		return NULL;
+
 	node = tree->curnode;
 
 	/* Handle end of tree. */
@@ -488,8 +493,11 @@ treewalk_next(struct treeroot *tree)
 			break;
 		}
 
-		if (tree->curdir == NULL)
+		if (tree->curdir == NULL) {
+			treenode_free_node(tree->rootnode);
+			tree->rootnode = NULL;
 			break;
+		}
 	}
 
 	treeroot_set_curnode(tree, node);
