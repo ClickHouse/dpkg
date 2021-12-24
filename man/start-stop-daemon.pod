@@ -338,7 +338,7 @@ Do the same and print the user-friendly string for the B<errno> value.
 
 =back
 
-=item B<--notify-timeout>I<timeout>
+=item B<--notify-timeout> I<timeout>
 
 Set a timeout for the B<--notify-await> option (since version 1.19.3).
 When the timeout is reached, B<start-stop-daemon> will exit with an
@@ -351,6 +351,12 @@ Do not close any file descriptor when forcing the daemon into the background
 (since version 1.16.5).
 Used for debugging purposes to see the process output, or to redirect file
 descriptors to log the process output.
+Only relevant when using B<--background>.
+
+=item B<-O>, B<--output> I<pathname>
+
+Redirect B<stdout> and B<stderr> to I<pathname> when forcing the daemon into
+the background (since version 1.20.6).
 Only relevant when using B<--background>.
 
 =item B<-N>, B<--nicelevel> I<int>
@@ -479,7 +485,7 @@ food, running as user food, with pid in food.pid):
 =over
 
  start-stop-daemon --start --oknodo --user food --name food \
- 	--pidfile /run/food.pid --startas /usr/sbin/food \
+ 	--pidfile %RUNSTATEDIR%/food.pid --startas /usr/sbin/food \
  	--chuid food -- --daemon
 
 =back
@@ -489,7 +495,7 @@ Send B<SIGTERM> to B<food> and wait up to 5 seconds for it to stop:
 =over
 
  start-stop-daemon --stop --oknodo --user food --name food \
- 	--pidfile /run/food.pid --retry 5
+ 	--pidfile %RUNSTATEDIR%/food.pid --retry 5
 
 =back
 
@@ -498,7 +504,6 @@ Demonstration of a custom schedule for stopping B<food>:
 =over
 
  start-stop-daemon --stop --oknodo --user food --name food \
- 	--pidfile /run/food.pid --retry=TERM/30/KILL/5
+ 	--pidfile %RUNSTATEDIR%/food.pid --retry=TERM/30/KILL/5
 
 =back
-

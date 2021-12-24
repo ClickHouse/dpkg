@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dpkg 1.20.0\n"
 "Report-Msgid-Bugs-To: debian-dpkg@lists.debian.org\n"
-"POT-Creation-Date: 2020-07-08 05:40+0200\n"
+"POT-Creation-Date: 2021-12-06 21:03+0100\n"
 "PO-Revision-Date: 2020-06-14 21:45-0400\n"
 "Last-Translator: Boyuan yang <byang@debian.org>\n"
 "Language-Team: Chinese (simplified) <debian-l10n-chinese@lists.debian.org>\n"
@@ -65,6 +65,12 @@ msgstr "ar 成员名称 '%s' 过长"
 #: lib/dpkg/ar.c
 #, c-format
 msgid "ar member size %jd too large"
+msgstr "ar 成员尺寸 %jd 过大"
+
+#: lib/dpkg/ar.c
+#, fuzzy, c-format
+#| msgid "ar member size %jd too large"
+msgid "ar member time %jd too large"
 msgstr "ar 成员尺寸 %jd 过大"
 
 #: lib/dpkg/ar.c
@@ -1051,6 +1057,12 @@ msgstr "无法打开日志文件 %s ：%s"
 #: lib/dpkg/log.c
 #, fuzzy, c-format
 #| msgid "cannot stat file '%s'"
+msgid "cannot get local time to log into '%s': %s"
+msgstr "无法获取文件 %s 的状态"
+
+#: lib/dpkg/log.c
+#, fuzzy, c-format
+#| msgid "cannot stat file '%s'"
 msgid "cannot write to log file '%s': %s"
 msgstr "无法获取文件 %s 的状态"
 
@@ -1784,6 +1796,11 @@ msgstr "读取 %.250s 时遭遇未预期的文件结束符"
 msgid "error formatting string into varbuf variable"
 msgstr "将字符串格式化为 varbuf 变量时出错"
 
+#: lib/dpkg/varbuf.c
+#, c-format
+msgid "cannot grow varbuf to size %zu; it would overflow"
+msgstr ""
+
 #: src/archives.c
 msgid "error reading from dpkg-deb pipe"
 msgstr "从 dpkg-deb 管道读取错误"
@@ -1844,8 +1861,9 @@ msgid "error creating directory '%.255s'"
 msgstr "新建目录 %.255s 时出错"
 
 #: src/archives.c
-#, c-format
-msgid "cannot compute MD5 hash for tar file '%.255s': %s"
+#, fuzzy, c-format
+#| msgid "cannot compute MD5 hash for tar file '%.255s': %s"
+msgid "cannot compute MD5 digest for file '%.255s' in tar archive: %s"
 msgstr "无法为tar文件 '%.255s' 计算MD5哈希值: %s "
 
 #: src/archives.c
@@ -1891,6 +1909,12 @@ msgstr "获取建议的新符号链接 %.250s 的状态失败，它将替代符�
 #, c-format
 msgid "newline not allowed in archive object name '%.255s'"
 msgstr "归档对象名称 “%.255s” 中不允许换行"
+
+#: src/archives.c
+#, fuzzy, c-format
+#| msgid "conffile '%.250s' does not appear in package"
+msgid "conffile '%s' marked for removal on upgrade, shipped in package"
+msgstr "软件包内没有发现 conffile  %.250s"
 
 #: src/archives.c
 #, c-format
@@ -1985,26 +2009,59 @@ msgid "unable to sync file '%.255s'"
 msgstr "无法同步文件 %.255s"
 
 #: src/archives.c
-#, c-format
+#, fuzzy, c-format
+#| msgid ""
+#| "ignoring dependency problem with %s:\n"
+#| "%s"
 msgid ""
-"ignoring dependency problem with %s:\n"
+"ignoring dependency problem with installation of %s:\n"
 "%s"
 msgstr ""
 "忽略 %s 的依赖关系问题：\n"
 "%s"
 
 #: src/archives.c
-#, c-format
+#, fuzzy, c-format
+#| msgid ""
+#| "no, cannot proceed with %s (--auto-deconfigure will help):\n"
+#| "%s"
+msgid ""
+"no, cannot proceed with installation of %s (--auto-deconfigure will help):\n"
+"%s"
+msgstr ""
+"拒绝，不能继续进行 %s (不妨尝试 --auto-deconfigure)：\n"
+"%s"
+
+#: src/archives.c
+#, fuzzy, c-format
+#| msgid ""
+#| "ignoring dependency problem with %s:\n"
+#| "%s"
+msgid ""
+"ignoring dependency problem with removal of %s:\n"
+"%s"
+msgstr ""
+"忽略 %s 的依赖关系问题：\n"
+"%s"
+
+#: src/archives.c
+#, fuzzy, c-format
+#| msgid ""
+#| "considering deconfiguration of essential\n"
+#| " package %s, to enable %s"
 msgid ""
 "considering deconfiguration of essential\n"
-" package %s, to enable %s"
+" package %s, to enable removal of %s"
 msgstr "正在考虑反配置基础软件包 %s，以便启用 %s。"
 
 #: src/archives.c
-#, c-format
+#, fuzzy, c-format
+#| msgid ""
+#| "no, %s is essential, will not deconfigure\n"
+#| " it in order to enable %s"
 msgid ""
 "no, %s is essential, will not deconfigure\n"
-" it in order to enable %s"
+" it in order to enable removal of %s"
 msgstr ""
 "拒绝，%s 是基础软件包，不能反配置该软件包\n"
 " 以启用 %s"
@@ -2016,7 +2073,7 @@ msgstr ""
 #| " package %s, to enable %s"
 msgid ""
 "considering deconfiguration of protected\n"
-" package %s, to enable %s"
+" package %s, to enable removal of %s"
 msgstr "正在考虑反配置基础软件包 %s，以便启用 %s。"
 
 #: src/archives.c
@@ -2026,33 +2083,29 @@ msgstr "正在考虑反配置基础软件包 %s，以便启用 %s。"
 #| " it in order to enable %s"
 msgid ""
 "no, %s is protected, will not deconfigure\n"
-" it in order to enable %s"
+" it in order to enable removal of %s"
 msgstr ""
 "拒绝，%s 是基础软件包，不能反配置该软件包\n"
 " 以启用 %s"
 
 #: src/archives.c
-#, c-format
+#, fuzzy, c-format
+#| msgid ""
+#| "no, cannot proceed with %s (--auto-deconfigure will help):\n"
+#| "%s"
 msgid ""
-"no, cannot proceed with %s (--auto-deconfigure will help):\n"
+"no, cannot proceed with removal of %s (--auto-deconfigure will help):\n"
 "%s"
 msgstr ""
 "拒绝，不能继续进行 %s (不妨尝试 --auto-deconfigure)：\n"
 "%s"
 
 #: src/archives.c
-#, c-format
-msgid "removal of %.250s"
-msgstr "卸载 %.250s"
-
-#: src/archives.c
-#, c-format
-msgid "installation of %.250s"
-msgstr "安装 %.250s"
-
-#: src/archives.c
-#, c-format
-msgid "considering deconfiguration of %s, which would be broken by %s ..."
+#, fuzzy, c-format
+#| msgid "considering deconfiguration of %s, which would be broken by %s ..."
+msgid ""
+"considering deconfiguration of %s, which would be broken by installation of "
+"%s ..."
 msgstr "正在考虑反配置 %s，否则会被 %s 破坏 ..."
 
 #: src/archives.c
@@ -2375,7 +2428,7 @@ msgstr "%s：无法删除以前的备份文件 %.250s ：%s"
 msgid "%s: failed to rename '%.250s' to '%.250s': %s"
 msgstr "%s：无法将 %.250s 改名为 %.250s ：%s"
 
-#: src/configure.c
+#: src/configure.c src/unpack.c
 #, c-format
 msgid "%s: failed to remove '%.250s': %s"
 msgstr "%s：删除 %.250s 失败：%s"
@@ -2512,14 +2565,16 @@ msgstr ""
 msgid "%s: conffile '%.250s' is not a plain file or symlink (= '%s')"
 msgstr "%s：警告 - conffile  %.250s 不是普通文件或者符号链接 (=  %s )"
 
-#: src/configure.c dpkg-split/split.c
-#, c-format
-msgid "cannot compute MD5 hash for file '%s': %s"
+#: src/configure.c src/verify.c dpkg-split/split.c
+#, fuzzy, c-format
+#| msgid "cannot compute MD5 hash for file '%s': %s"
+msgid "cannot compute MD5 digest for file '%s': %s"
 msgstr "无法计算文件 %s 的MD5哈希值：%s"
 
 #: src/configure.c
-#, c-format
-msgid "%s: unable to open %s for hash: %s"
+#, fuzzy, c-format
+#| msgid "%s: unable to open %s for hash: %s"
+msgid "%s: unable to open %s to compute its digest: %s"
 msgstr "%s：无法打开 %s 来作哈希处理：%s"
 
 #: src/depcon.c
@@ -3040,29 +3095,21 @@ msgid_plural " %d packages, from the following sections:"
 msgstr[0] " 在下列类别中，有 %d 个软件包："
 
 #: src/enquiry.c
-#, c-format
-msgid ""
-"Version of dpkg with working %s support not yet configured.\n"
-" Please use 'dpkg --configure dpkg', and then try again.\n"
-msgstr ""
-"带有可工作 %s 支持的 dpkg 版本尚未配置好。\n"
-" 请运行 dpkg --configure dpkg，然后再尝试。\n"
-
-#: src/enquiry.c
-#, c-format
-msgid "dpkg not recorded as installed, cannot check for %s support!\n"
-msgstr "记录中显示，dpkg 没有被安装，因而不能断定它是否支持 %s！\n"
-
-#: src/enquiry.c
-msgid "Pre-Depends field"
+#, fuzzy
+#| msgid "Pre-Depends field"
+msgid "the Pre-Depends field"
 msgstr "预依赖字段"
 
 #: src/enquiry.c
-msgid "epoch"
-msgstr "版次"
+#, fuzzy
+#| msgid "epoch in version is empty"
+msgid "epochs in versions"
+msgstr "版本中的版次为空"
 
 #: src/enquiry.c
-msgid "long filenames"
+#, fuzzy
+#| msgid "long filenames"
+msgid "long filenames in .deb archives"
 msgstr "长文件名"
 
 #: src/enquiry.c
@@ -3070,18 +3117,46 @@ msgid "multiple Conflicts and Replaces"
 msgstr "多个冲突和替换"
 
 #: src/enquiry.c
-msgid "multi-arch"
-msgstr "多体系结构"
+msgid "multi-arch fields and semantics"
+msgstr ""
 
 #: src/enquiry.c
-msgid "versioned Provides"
-msgstr "填实"
+msgid "versioned relationships in the Provides field"
+msgstr ""
 
 #: src/enquiry.c
 #, fuzzy
 #| msgid "Pre-Depends field"
-msgid "Protected field"
+msgid "the Protected field"
 msgstr "预依赖字段"
+
+#: src/enquiry.c
+#, fuzzy, c-format
+#| msgid "cannot extract package field value from '%s': %s"
+msgid "cannot parse dpkg running version '%s': %s"
+msgstr "无法从 %s 中抽取软件包域值：%s"
+
+#: src/enquiry.c
+#, fuzzy, c-format
+#| msgid ""
+#| "Version of dpkg with working %s support not yet configured.\n"
+#| " Please use 'dpkg --configure dpkg', and then try again.\n"
+msgid ""
+"Running version of dpkg does not support %s.\n"
+" Please upgrade to at least dpkg %s, and then try again.\n"
+msgstr ""
+"带有可工作 %s 支持的 dpkg 版本尚未配置好。\n"
+" 请运行 dpkg --configure dpkg，然后再尝试。\n"
+
+#: src/enquiry.c
+#, c-format
+msgid "%s assert options - assert whether features are supported:\n"
+msgstr ""
+
+#: src/enquiry.c
+#, c-format
+msgid "unknown --%s-<feature>"
+msgstr ""
 
 #: src/enquiry.c
 #, c-format
@@ -3439,7 +3514,46 @@ msgid "Debian '%s' package management program version %s.\n"
 msgstr "Debian %s 软件包管理程序 %s 版。\n"
 
 #: src/main.c
-#, c-format
+#, fuzzy, c-format
+#| msgid ""
+#| "Commands:\n"
+#| "  -i|--install       <.deb file name>... | -R|--recursive <directory>...\n"
+#| "  --unpack           <.deb file name>... | -R|--recursive <directory>...\n"
+#| "  -A|--record-avail  <.deb file name>... | -R|--recursive <directory>...\n"
+#| "  --configure        <package>... | -a|--pending\n"
+#| "  --triggers-only    <package>... | -a|--pending\n"
+#| "  -r|--remove        <package>... | -a|--pending\n"
+#| "  -P|--purge         <package>... | -a|--pending\n"
+#| "  -V|--verify [<package>...]       Verify the integrity of package(s).\n"
+#| "  --get-selections [<pattern>...]  Get list of selections to stdout.\n"
+#| "  --set-selections                 Set package selections from stdin.\n"
+#| "  --clear-selections               Deselect every non-essential package.\n"
+#| "  --update-avail [<Packages-file>] Replace available packages info.\n"
+#| "  --merge-avail [<Packages-file>]  Merge with info from file.\n"
+#| "  --clear-avail                    Erase existing available info.\n"
+#| "  --forget-old-unavail             Forget uninstalled unavailable pkgs.\n"
+#| "  -s|--status [<package>...]       Display package status details.\n"
+#| "  -p|--print-avail [<package>...]  Display available version details.\n"
+#| "  -L|--listfiles <package>...      List files 'owned' by package(s).\n"
+#| "  -l|--list [<pattern>...]         List packages concisely.\n"
+#| "  -S|--search <pattern>...         Find package(s) owning file(s).\n"
+#| "  -C|--audit [<package>...]        Check for broken package(s).\n"
+#| "  --yet-to-unpack                  Print packages selected for "
+#| "installation.\n"
+#| "  --predep-package                 Print pre-dependencies to unpack.\n"
+#| "  --add-architecture <arch>        Add <arch> to the list of "
+#| "architectures.\n"
+#| "  --remove-architecture <arch>     Remove <arch> from the list of "
+#| "architectures.\n"
+#| "  --print-architecture             Print dpkg architecture.\n"
+#| "  --print-foreign-architectures    Print allowed foreign architectures.\n"
+#| "  --assert-<feature>               Assert support for the specified "
+#| "feature.\n"
+#| "  --validate-<thing> <string>      Validate a <thing>'s <string>.\n"
+#| "  --compare-versions <a> <op> <b>  Compare version numbers - see below.\n"
+#| "  --force-help                     Show help on forcing.\n"
+#| "  -Dh|--debug=help                 Show help on debugging.\n"
+#| "\n"
 msgid ""
 "Commands:\n"
 "  -i|--install       <.deb file name>... | -R|--recursive <directory>...\n"
@@ -3471,6 +3585,7 @@ msgid ""
 "architectures.\n"
 "  --print-architecture             Print dpkg architecture.\n"
 "  --print-foreign-architectures    Print allowed foreign architectures.\n"
+"  --assert-help                    Show help on assertions.\n"
 "  --assert-<feature>               Assert support for the specified "
 "feature.\n"
 "  --validate-<thing> <string>      Validate a <thing>'s <string>.\n"
@@ -3523,21 +3638,6 @@ msgid ""
 msgstr ""
 "  -?, --help                       显示本帮助信息。\n"
 "      --version                    显示版本信息。\n"
-"\n"
-
-#: src/main.c
-#, fuzzy, c-format
-#| msgid ""
-#| "Assertable features: support-predepends, working-epoch, long-filenames,\n"
-#| "  multi-conrep, multi-arch, versioned-provides.\n"
-#| "\n"
-msgid ""
-"Assertable features: support-predepends, working-epoch, long-filenames,\n"
-"  multi-conrep, multi-arch, versioned-provides, protected-field.\n"
-"\n"
-msgstr ""
-"Assert 特性： support-predepends, working-epoch, long-filenames,\n"
-"  multi-conrep, multi-arch, versioned-provides.\n"
 "\n"
 
 #: src/main.c
@@ -4172,6 +4272,7 @@ msgstr ""
 msgid ""
 "Options:\n"
 "  --admindir=<directory>           Use <directory> instead of %s.\n"
+"  --root=<directory>               Use <directory> instead of %s.\n"
 "  --load-avail                     Use available file on --show and --list.\n"
 "  --no-pager                       Disables the use of any pager.\n"
 "  -f|--showformat=<format>         Use alternative format for --show.\n"
@@ -4624,10 +4725,24 @@ msgstr ""
 "\n"
 
 #: src/trigcmd.c
-#, c-format
+#, fuzzy, c-format
+#| msgid ""
+#| "Options:\n"
+#| "  --admindir=<directory>           Use <directory> instead of %s.\n"
+#| "  --by-package=<package>           Override trigger awaiter (normally "
+#| "set\n"
+#| "                                     by dpkg).\n"
+#| "  --await                          Package needs to await the "
+#| "processing.\n"
+#| "  --no-await                       No package needs to await the "
+#| "processing.\n"
+#| "  --no-act                         Just test - don't actually change "
+#| "anything.\n"
+#| "\n"
 msgid ""
 "Options:\n"
 "  --admindir=<directory>           Use <directory> instead of %s.\n"
+"  --root=<directory>               Use <directory> instead of %s.\n"
 "  --by-package=<package>           Override trigger awaiter (normally set\n"
 "                                     by dpkg).\n"
 "  --await                          Package needs to await the processing.\n"
@@ -4795,9 +4910,16 @@ msgid "De-configuring %s (%s), to allow removal of %s (%s) ...\n"
 msgstr "正在反配置 %s (%s)，以允许删除 %s (%s) ...\n"
 
 #: src/unpack.c
-#, c-format
-msgid "De-configuring %s (%s) ...\n"
-msgstr "正在反配置 %s (%s) ...\n"
+#, fuzzy, c-format
+#| msgid "De-configuring %s (%s), to allow removal of %s (%s) ...\n"
+msgid "De-configuring %s (%s), to allow installation of %s (%s) ...\n"
+msgstr "正在反配置 %s (%s)，以允许删除 %s (%s) ...\n"
+
+#: src/unpack.c
+#, fuzzy, c-format
+#| msgid "De-configuring %s (%s), to allow removal of %s (%s) ...\n"
+msgid "De-configuring %s (%s), to allow configuration of %s (%s) ...\n"
+msgstr "正在反配置 %s (%s)，以允许删除 %s (%s) ...\n"
 
 #: src/unpack.c
 msgid "conffile file contains an empty line"
@@ -4812,6 +4934,22 @@ msgstr "conffile 的文件名 %s 超长，或是缺少最后结尾的换行符"
 #, c-format
 msgid "conffile name '%s' is not an absolute pathname"
 msgstr "conffile 文件名 \"%s\" 不是绝对路径名"
+
+#: src/unpack.c dpkg-deb/build.c
+#, c-format
+msgid "conffile name missing after flag '%s'"
+msgstr ""
+
+#: src/unpack.c dpkg-deb/build.c
+#, fuzzy, c-format
+#| msgid "conffile filename '%s' contains trailing white spaces"
+msgid "line with conffile filename '%s' has leading white spaces"
+msgstr "conffile  %s  的文件名后面含有空格"
+
+#: src/unpack.c dpkg-deb/build.c
+#, c-format
+msgid "unknown flag '%s' for conffile '%s'"
+msgstr ""
 
 #: src/unpack.c utils/update-alternatives.c
 #, c-format
@@ -4866,6 +5004,29 @@ msgstr "软件包 %s 把一个列表作为信息文件使用"
 #, c-format
 msgid "unable to install new info file '%.250s' as '%.250s'"
 msgstr "无法把新的信息文件 %.250s 安装到 %.250s"
+
+#: src/unpack.c
+#, fuzzy, c-format
+#| msgid "Removing %s (%s) ...\n"
+msgid "Removing obsolete conffile %s ...\n"
+msgstr "正在卸载 %s (%s) ...\n"
+
+#: src/unpack.c
+#, c-format
+msgid "Obsolete conffile '%s' has been modified by you.\n"
+msgstr ""
+
+#: src/unpack.c
+#, fuzzy, c-format
+#| msgid "Removing %s (%s) ...\n"
+msgid "Saving as %s ...\n"
+msgstr "正在卸载 %s (%s) ...\n"
+
+#: src/unpack.c
+#, fuzzy, c-format
+#| msgid "cannot append ar member file (%s) to '%s': %s"
+msgid "%s: cannot rename obsolete conffile '%s' to '%s': %s"
+msgstr "无法追加 ar 成员文件(%s)到 '%s': %s"
 
 #: src/unpack.c
 #, c-format
@@ -4945,6 +5106,12 @@ msgstr "软件库中的文件系统 tar 文件已损坏"
 #, c-format
 msgid "cannot zap possible trailing zeros from dpkg-deb: %s"
 msgstr "无法从 dpkg-deb 的输出中截去尾缀的零数据部分：%s"
+
+#: src/unpack.c
+#, fuzzy, c-format
+#| msgid "De-configuring %s (%s), to allow removal of %s (%s) ...\n"
+msgid "Removing %s (%s), to allow configuration of %s (%s) ...\n"
+msgstr "正在反配置 %s (%s)，以允许删除 %s (%s) ...\n"
 
 #: src/update.c
 #, c-format
@@ -5042,6 +5209,10 @@ msgid "empty string from fgets reading conffiles"
 msgstr "通过 fgets 读取 conffile 时，返回了空字符串"
 
 #: dpkg-deb/build.c
+msgid "empty and whitespace-only lines are not allowed in conffiles"
+msgstr ""
+
+#: dpkg-deb/build.c
 #, c-format
 msgid "conffile filename '%s' contains trailing white spaces"
 msgstr "conffile  %s  的文件名后面含有空格"
@@ -5055,6 +5226,11 @@ msgstr "软件包内没有发现 conffile  %.250s"
 #, c-format
 msgid "conffile '%.250s' is not stattable"
 msgstr "无法 conffile  %.50s 的状态"
+
+#: dpkg-deb/build.c
+#, c-format
+msgid "conffile '%s' is present but is requested to be removed"
+msgstr ""
 
 #: dpkg-deb/build.c
 #, c-format
@@ -5285,7 +5461,9 @@ msgid "cannot close decompressor pipe"
 msgstr "无法关闭解压管道"
 
 #: dpkg-deb/extract.c
-msgid "decompressing archive member"
+#, fuzzy, c-format
+#| msgid "decompressing archive member"
+msgid "decompressing archive '%s' (size=%jd) member '%s'"
 msgstr "解压缩归档成员"
 
 #: dpkg-deb/extract.c
@@ -6120,8 +6298,10 @@ msgstr ""
 #| "  --version                show the version.\n"
 msgid ""
 "Options:\n"
-"  --altdir <directory>     change the alternatives directory.\n"
-"  --admindir <directory>   change the administrative directory.\n"
+"  --altdir <directory>     change the alternatives directory\n"
+"                             (default is %s).\n"
+"  --admindir <directory>   change the administrative directory\n"
+"                             (default is %s).\n"
 "  --instdir <directory>    change the installation directory.\n"
 "  --root <directory>       change the filesystem root directory.\n"
 "  --log <file>             change the log file.\n"
@@ -6178,6 +6358,12 @@ msgstr "无法创建目录 %s"
 #, c-format
 msgid "cannot append to '%s'"
 msgstr "无法追加至 %s"
+
+#: utils/update-alternatives.c
+#, fuzzy, c-format
+#| msgid "cannot create directory %s"
+msgid "cannot get local time to log into '%s'"
+msgstr "无法创建目录 %s"
 
 #: utils/update-alternatives.c
 #, fuzzy, c-format
@@ -6432,6 +6618,12 @@ msgstr "%2$s 的候选项 %1$s 没有注册，不予设置"
 
 #: utils/update-alternatives.c
 #, fuzzy, c-format
+#| msgid "There is no program which provides %s."
+msgid "there is no program which provides %s"
+msgstr "没有程序提供 %s。"
+
+#: utils/update-alternatives.c
+#, fuzzy, c-format
 #| msgid "%s/%s is dangling; it will be updated with best choice"
 msgid "%s%s/%s is dangling; it will be updated with best choice"
 msgstr "%s/%s 正处于未决状态；将以最佳选项更新它。"
@@ -6491,12 +6683,25 @@ msgstr "当前候选项 %1$s 未知，为链接组 %3$s 切换至 %2$s"
 
 #: utils/update-alternatives.c
 #, c-format
-msgid "Alternative %s unchanged because choice %s is not available."
+msgid "selecting alternative %s as auto"
+msgstr ""
+
+#: utils/update-alternatives.c
+#, fuzzy, c-format
+#| msgid "no alternatives for %s"
+msgid "selecting alternative %s as choice %s"
+msgstr "无 %s 的候选项"
+
+#: utils/update-alternatives.c
+#, fuzzy, c-format
+#| msgid "Alternative %s unchanged because choice %s is not available."
+msgid "alternative %s unchanged because choice %s is not available"
 msgstr "候选项 %s 未改变，因为选项 %s 不可用。"
 
 #: utils/update-alternatives.c
-#, c-format
-msgid "Skip unknown alternative %s."
+#, fuzzy, c-format
+#| msgid "Skip unknown alternative %s."
+msgid "skip unknown alternative %s"
 msgstr "跳过位置候选项 %s。"
 
 #: utils/update-alternatives.c
@@ -6505,8 +6710,9 @@ msgid "line too long or not terminated while trying to read %s"
 msgstr "尝试读取 %s 时行过长或没有结束"
 
 #: utils/update-alternatives.c
-#, c-format
-msgid "Skip invalid line: %s"
+#, fuzzy, c-format
+#| msgid "Skip invalid line: %s"
+msgid "skip invalid selection line: %s"
 msgstr "跳过无效行：%s"
 
 #: utils/update-alternatives.c
@@ -6652,6 +6858,45 @@ msgstr "运行 update-alternatives 工具以修改系统可选项的选择情况
 #: utils/update-alternatives.polkit.in
 msgid "Authentication is required to run update-alternatives"
 msgstr "需要认证后才能执行 update-alternatives"
+
+#, c-format
+#~ msgid "removal of %.250s"
+#~ msgstr "卸载 %.250s"
+
+#, c-format
+#~ msgid "installation of %.250s"
+#~ msgstr "安装 %.250s"
+
+#, c-format
+#~ msgid "dpkg not recorded as installed, cannot check for %s support!\n"
+#~ msgstr "记录中显示，dpkg 没有被安装，因而不能断定它是否支持 %s！\n"
+
+#~ msgid "epoch"
+#~ msgstr "版次"
+
+#~ msgid "multi-arch"
+#~ msgstr "多体系结构"
+
+#~ msgid "versioned Provides"
+#~ msgstr "填实"
+
+#, fuzzy, c-format
+#~| msgid ""
+#~| "Assertable features: support-predepends, working-epoch, long-filenames,\n"
+#~| "  multi-conrep, multi-arch, versioned-provides.\n"
+#~| "\n"
+#~ msgid ""
+#~ "Assertable features: support-predepends, working-epoch, long-filenames,\n"
+#~ "  multi-conrep, multi-arch, versioned-provides, protected-field.\n"
+#~ "\n"
+#~ msgstr ""
+#~ "Assert 特性： support-predepends, working-epoch, long-filenames,\n"
+#~ "  multi-conrep, multi-arch, versioned-provides.\n"
+#~ "\n"
+
+#, c-format
+#~ msgid "De-configuring %s (%s) ...\n"
+#~ msgstr "正在反配置 %s (%s) ...\n"
 
 #~ msgid ""
 #~ "need --display, --query, --list, --get-selections, --config, --set, --set-"
@@ -6800,9 +7045,6 @@ msgstr "需要认证后才能执行 update-alternatives"
 
 #~ msgid "failed to chdir to `/' for cleanup"
 #~ msgstr "进行清理工作时，chdir 到 / 目录失败"
-
-#~ msgid "cannot extract package field value from '%s': %s"
-#~ msgstr "无法从 %s 中抽取软件包域值：%s"
 
 #~ msgid "file name '%.50s...' is too long"
 #~ msgstr "文件名 %.50s... 太长了"

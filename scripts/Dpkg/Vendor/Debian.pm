@@ -105,8 +105,11 @@ sub _add_build_flags {
         },
         reproducible => {
             timeless => 1,
-            fixfilepath => 0,
+            fixfilepath => 1,
             fixdebugpath => 1,
+        },
+        optimize => {
+            lto => 0,
         },
         sanitize => {
             address => 0,
@@ -158,19 +161,27 @@ sub _add_build_flags {
 
     ## Global defaults
 
+    my @compile_flags = qw(
+        CFLAGS
+        CXXFLAGS
+        OBJCFLAGS
+        OBJCXXFLAGS
+        FFLAGS
+        FCFLAGS
+        GCJFLAGS
+    );
+
     my $default_flags;
+    my $default_d_flags;
     if ($opts_build->has('noopt')) {
         $default_flags = '-g -O0';
+        $default_d_flags = '-fdebug';
     } else {
         $default_flags = '-g -O2';
+        $default_d_flags = '-frelease';
     }
-    $flags->append('CFLAGS', $default_flags);
-    $flags->append('CXXFLAGS', $default_flags);
-    $flags->append('OBJCFLAGS', $default_flags);
-    $flags->append('OBJCXXFLAGS', $default_flags);
-    $flags->append('FFLAGS', $default_flags);
-    $flags->append('FCFLAGS', $default_flags);
-    $flags->append('GCJFLAGS', $default_flags);
+    $flags->append($_, $default_flags) foreach @compile_flags;
+    $flags->append('DFLAGS', $default_d_flags);
 
     ## Area: future
 
@@ -257,13 +268,14 @@ sub _add_build_flags {
             $map = '-fdebug-prefix-map=' . $build_path . '=.';
         }
 
-        $flags->append('CFLAGS', $map);
-        $flags->append('CXXFLAGS', $map);
-        $flags->append('OBJCFLAGS', $map);
-        $flags->append('OBJCXXFLAGS', $map);
-        $flags->append('FFLAGS', $map);
-        $flags->append('FCFLAGS', $map);
-        $flags->append('GCJFLAGS', $map);
+        $flags->append($_, $map) foreach @compile_flags;
+    }
+
+    ## Area: optimize
+
+    if ($use_feature{optimize}{lto}) {
+        my $flag = '-flto=auto -ffat-lto-objects';
+        $flags->append($_, $flag) foreach (@compile_flags, 'LDFLAGS');
     }
 
     ## Area: sanitize
@@ -373,47 +385,23 @@ sub _add_build_flags {
         $use_feature{hardening}{pie} and
         not $builtin_feature{hardening}{pie}) {
 	my $flag = "-specs=$Dpkg::DATADIR/pie-compile.specs";
-	$flags->append('CFLAGS', $flag);
-	$flags->append('OBJCFLAGS',  $flag);
-	$flags->append('OBJCXXFLAGS', $flag);
-	$flags->append('FFLAGS', $flag);
-	$flags->append('FCFLAGS', $flag);
-	$flags->append('CXXFLAGS', $flag);
-	$flags->append('GCJFLAGS', $flag);
+        $flags->append($_, $flag) foreach @compile_flags;
 	$flags->append('LDFLAGS', "-specs=$Dpkg::DATADIR/pie-link.specs");
     } elsif (defined $use_feature{hardening}{pie} and
              not $use_feature{hardening}{pie} and
              $builtin_feature{hardening}{pie}) {
 	my $flag = "-specs=$Dpkg::DATADIR/no-pie-compile.specs";
-	$flags->append('CFLAGS', $flag);
-	$flags->append('OBJCFLAGS',  $flag);
-	$flags->append('OBJCXXFLAGS', $flag);
-	$flags->append('FFLAGS', $flag);
-	$flags->append('FCFLAGS', $flag);
-	$flags->append('CXXFLAGS', $flag);
-	$flags->append('GCJFLAGS', $flag);
+        $flags->append($_, $flag) foreach @compile_flags;
 	$flags->append('LDFLAGS', "-specs=$Dpkg::DATADIR/no-pie-link.specs");
     }
 
     # Stack protector
     if ($use_feature{hardening}{stackprotectorstrong}) {
 	my $flag = '-fstack-protector-strong';
-	$flags->append('CFLAGS', $flag);
-	$flags->append('OBJCFLAGS', $flag);
-	$flags->append('OBJCXXFLAGS', $flag);
-	$flags->append('FFLAGS', $flag);
-	$flags->append('FCFLAGS', $flag);
-	$flags->append('CXXFLAGS', $flag);
-	$flags->append('GCJFLAGS', $flag);
+        $flags->append($_, $flag) foreach @compile_flags;
     } elsif ($use_feature{hardening}{stackprotector}) {
 	my $flag = '-fstack-protector --param=ssp-buffer-size=4';
-	$flags->append('CFLAGS', $flag);
-	$flags->append('OBJCFLAGS', $flag);
-	$flags->append('OBJCXXFLAGS', $flag);
-	$flags->append('FFLAGS', $flag);
-	$flags->append('FCFLAGS', $flag);
-	$flags->append('CXXFLAGS', $flag);
-	$flags->append('GCJFLAGS', $flag);
+        $flags->append($_, $flag) foreach @compile_flags;
     }
 
     # Fortify Source
@@ -466,7 +454,7 @@ sub _build_tainted_by {
 
         my $linkname = readlink $pathname;
         if ($linkname eq "usr$pathname" or $linkname eq "/usr$pathname") {
-            $tainted{'merged-usr-via-symlinks'} = 1;
+            $tainted{'merged-usr-via-aliased-dirs'} = 1;
             last;
         }
     }

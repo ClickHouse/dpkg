@@ -29,6 +29,8 @@
 #include <dpkg/error.h>
 #include <dpkg/file.h>
 
+DPKG_BEGIN_DECLS
+
 /**
  * @defgroup tar Tar archive handling
  * @ingroup dpkg-public
@@ -80,7 +82,7 @@ struct tar_entry {
 	/** File size. */
 	off_t size;
 	/** Last-modified time. */
-	time_t mtime;
+	intmax_t mtime;
 	/** Special device for mknod(). */
 	dev_t dev;
 
@@ -126,5 +128,7 @@ int
 tar_extractor(struct tar_archive *tar);
 
 /** @} */
+
+DPKG_END_DECLS
 
 #endif

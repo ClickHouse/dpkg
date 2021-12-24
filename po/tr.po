@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dpkg 1.17.10\n"
 "Report-Msgid-Bugs-To: debian-dpkg@lists.debian.org\n"
-"POT-Creation-Date: 2020-07-08 05:40+0200\n"
+"POT-Creation-Date: 2021-12-06 21:03+0100\n"
 "PO-Revision-Date: 2018-01-03 16:44+0300\n"
 "Last-Translator: Mert Dirik <mertdirik@gmail.com>\n"
 "Language-Team: Turkish <debian-l10n-turkish@lists.debian.org>\n"
@@ -56,6 +56,12 @@ msgstr "ar üye adı '%s' çok uzun"
 #: lib/dpkg/ar.c
 #, c-format
 msgid "ar member size %jd too large"
+msgstr "ar üye boyutu %jd çok büyük"
+
+#: lib/dpkg/ar.c
+#, fuzzy, c-format
+#| msgid "ar member size %jd too large"
+msgid "ar member time %jd too large"
 msgstr "ar üye boyutu %jd çok büyük"
 
 #: lib/dpkg/ar.c
@@ -1100,6 +1106,12 @@ msgstr "günlük dosyası '%s' açılamadı: %s"
 #: lib/dpkg/log.c
 #, fuzzy, c-format
 #| msgid "cannot stat file '%s'"
+msgid "cannot get local time to log into '%s': %s"
+msgstr "'%s' dosyasına stat çağrısı başarısız"
+
+#: lib/dpkg/log.c
+#, fuzzy, c-format
+#| msgid "cannot stat file '%s'"
 msgid "cannot write to log file '%s': %s"
 msgstr "'%s' dosyasına stat çağrısı başarısız"
 
@@ -1896,6 +1908,11 @@ msgstr "'%.250s' dosyasında beklenmeyen dosya sonu"
 msgid "error formatting string into varbuf variable"
 msgstr "dizgi varbuf değişkeni olarak biçimlendirilirken bir sorun yaşandı"
 
+#: lib/dpkg/varbuf.c
+#, c-format
+msgid "cannot grow varbuf to size %zu; it would overflow"
+msgstr ""
+
 #: src/archives.c
 msgid "error reading from dpkg-deb pipe"
 msgstr "dpkg-deb borusundan okuma yapılırken bir sorun yaşandı"
@@ -1958,8 +1975,9 @@ msgid "error creating directory '%.255s'"
 msgstr "'%.255s' dizini oluşturulurken bir sorun yaşandı"
 
 #: src/archives.c
-#, c-format
-msgid "cannot compute MD5 hash for tar file '%.255s': %s"
+#, fuzzy, c-format
+#| msgid "cannot compute MD5 hash for tar file '%.255s': %s"
+msgid "cannot compute MD5 digest for file '%.255s' in tar archive: %s"
 msgstr "'%.255s' tar dosyasının MD5 sağlama toplamı hesaplanamıyor: %s"
 
 #: src/archives.c
@@ -2010,6 +2028,12 @@ msgstr ""
 msgid "newline not allowed in archive object name '%.255s'"
 msgstr ""
 "arşiv nesnelerinin adlarında yeni satır karakteri kullanılamaz (%.255s)"
+
+#: src/archives.c
+#, fuzzy, c-format
+#| msgid "conffile '%.250s' does not appear in package"
+msgid "conffile '%s' marked for removal on upgrade, shipped in package"
+msgstr "yapılandırma dosyası (%.250s) pakette yok"
 
 #: src/archives.c
 #, c-format
@@ -2117,28 +2141,62 @@ msgid "unable to sync file '%.255s'"
 msgstr "'%.255s' dosyası diske yazılamadı"
 
 #: src/archives.c
-#, c-format
+#, fuzzy, c-format
+#| msgid ""
+#| "ignoring dependency problem with %s:\n"
+#| "%s"
 msgid ""
-"ignoring dependency problem with %s:\n"
+"ignoring dependency problem with installation of %s:\n"
 "%s"
 msgstr ""
 "%s ile ilgili bağımlılık sorunu gözardı ediliyor:\n"
 "%s"
 
 #: src/archives.c
-#, c-format
+#, fuzzy, c-format
+#| msgid ""
+#| "no, cannot proceed with %s (--auto-deconfigure will help):\n"
+#| "%s"
+msgid ""
+"no, cannot proceed with installation of %s (--auto-deconfigure will help):\n"
+"%s"
+msgstr ""
+"hayır, %s ile devam edilemez (--auto-deconfigure seçeneği yardımcı "
+"olabilir:\n"
+"%s"
+
+#: src/archives.c
+#, fuzzy, c-format
+#| msgid ""
+#| "ignoring dependency problem with %s:\n"
+#| "%s"
+msgid ""
+"ignoring dependency problem with removal of %s:\n"
+"%s"
+msgstr ""
+"%s ile ilgili bağımlılık sorunu gözardı ediliyor:\n"
+"%s"
+
+#: src/archives.c
+#, fuzzy, c-format
+#| msgid ""
+#| "considering deconfiguration of essential\n"
+#| " package %s, to enable %s"
 msgid ""
 "considering deconfiguration of essential\n"
-" package %s, to enable %s"
+" package %s, to enable removal of %s"
 msgstr ""
 "%2$s paketini etkinleştirebilmek için %1$s temel paketinin\n"
 " yapılandırılmasının kaldırılması düşünülüyor"
 
 #: src/archives.c
-#, c-format
+#, fuzzy, c-format
+#| msgid ""
+#| "no, %s is essential, will not deconfigure\n"
+#| " it in order to enable %s"
 msgid ""
 "no, %s is essential, will not deconfigure\n"
-" it in order to enable %s"
+" it in order to enable removal of %s"
 msgstr ""
 "hayır, %s temel bir pakettir ve %s paketini etkinleştirmek\n"
 " için yapılandırılması kaldırılmayacak"
@@ -2150,7 +2208,7 @@ msgstr ""
 #| " package %s, to enable %s"
 msgid ""
 "considering deconfiguration of protected\n"
-" package %s, to enable %s"
+" package %s, to enable removal of %s"
 msgstr ""
 "%2$s paketini etkinleştirebilmek için %1$s temel paketinin\n"
 " yapılandırılmasının kaldırılması düşünülüyor"
@@ -2162,15 +2220,18 @@ msgstr ""
 #| " it in order to enable %s"
 msgid ""
 "no, %s is protected, will not deconfigure\n"
-" it in order to enable %s"
+" it in order to enable removal of %s"
 msgstr ""
 "hayır, %s temel bir pakettir ve %s paketini etkinleştirmek\n"
 " için yapılandırılması kaldırılmayacak"
 
 #: src/archives.c
-#, c-format
+#, fuzzy, c-format
+#| msgid ""
+#| "no, cannot proceed with %s (--auto-deconfigure will help):\n"
+#| "%s"
 msgid ""
-"no, cannot proceed with %s (--auto-deconfigure will help):\n"
+"no, cannot proceed with removal of %s (--auto-deconfigure will help):\n"
 "%s"
 msgstr ""
 "hayır, %s ile devam edilemez (--auto-deconfigure seçeneği yardımcı "
@@ -2178,18 +2239,11 @@ msgstr ""
 "%s"
 
 #: src/archives.c
-#, c-format
-msgid "removal of %.250s"
-msgstr "%.250s kaldırma"
-
-#: src/archives.c
-#, c-format
-msgid "installation of %.250s"
-msgstr "%.250s kurulumu"
-
-#: src/archives.c
-#, c-format
-msgid "considering deconfiguration of %s, which would be broken by %s ..."
+#, fuzzy, c-format
+#| msgid "considering deconfiguration of %s, which would be broken by %s ..."
+msgid ""
+"considering deconfiguration of %s, which would be broken by installation of "
+"%s ..."
 msgstr ""
 "%2$s tarafından bozulabilecek %1$s paketinin yapılandırılmasının "
 "kaldırılması düşünülüyor ..."
@@ -2528,7 +2582,7 @@ msgstr "%s: eski yedek (%.250s) kaldırılamadı: %s"
 msgid "%s: failed to rename '%.250s' to '%.250s': %s"
 msgstr "%s: '%.250s' dosyasının adı '%.250s' olarak değiştirilemedi: %s"
 
-#: src/configure.c
+#: src/configure.c src/unpack.c
 #, c-format
 msgid "%s: failed to remove '%.250s': %s"
 msgstr "%s: '%.250s' kaldırılamadı: %s"
@@ -2668,14 +2722,16 @@ msgstr ""
 "%s: yapılandırma dosyası (%.250s) normal bir dosya ya da sembolik bağ değil "
 "(= '%s')"
 
-#: src/configure.c dpkg-split/split.c
-#, c-format
-msgid "cannot compute MD5 hash for file '%s': %s"
+#: src/configure.c src/verify.c dpkg-split/split.c
+#, fuzzy, c-format
+#| msgid "cannot compute MD5 hash for file '%s': %s"
+msgid "cannot compute MD5 digest for file '%s': %s"
 msgstr "'%s' dosyasının MD5 sağlama toplamı hesaplanamıyor: %s"
 
 #: src/configure.c
-#, c-format
-msgid "%s: unable to open %s for hash: %s"
+#, fuzzy, c-format
+#| msgid "%s: unable to open %s for hash: %s"
+msgid "%s: unable to open %s to compute its digest: %s"
 msgstr "%s: %s sağlama amaçlı açılamadı: %s"
 
 #: src/depcon.c
@@ -3222,31 +3278,21 @@ msgstr[0] " şu bölümden %d paket:"
 msgstr[1] " şu bölümden %d paket:"
 
 #: src/enquiry.c
-#, c-format
-msgid ""
-"Version of dpkg with working %s support not yet configured.\n"
-" Please use 'dpkg --configure dpkg', and then try again.\n"
-msgstr ""
-"dpkg'nin \"%s\" desteğine sahip bir sürümü henüz yapılandırılmamış.\n"
-" Lütfen 'dpkg --configure dpkg' komutunu çalıştırdıktan sonra tekrar "
-"deneyin.\n"
-
-#: src/enquiry.c
-#, c-format
-msgid "dpkg not recorded as installed, cannot check for %s support!\n"
-msgstr ""
-"dpkg kurulu olarak kayıtlı değil, \"%s\" desteğinin varlığı denetlenemiyor!\n"
-
-#: src/enquiry.c
-msgid "Pre-Depends field"
+#, fuzzy
+#| msgid "Pre-Depends field"
+msgid "the Pre-Depends field"
 msgstr "'Pre-Depends' alanı"
 
 #: src/enquiry.c
-msgid "epoch"
-msgstr "devir"
+#, fuzzy
+#| msgid "epoch in version is empty"
+msgid "epochs in versions"
+msgstr "sürüm numarasındaki devir sayısı boş"
 
 #: src/enquiry.c
-msgid "long filenames"
+#, fuzzy
+#| msgid "long filenames"
+msgid "long filenames in .deb archives"
 msgstr "uzun dosya adları"
 
 #: src/enquiry.c
@@ -3254,18 +3300,47 @@ msgid "multiple Conflicts and Replaces"
 msgstr "birden fazla 'Çakışır' ve 'Değiştirir' değeri"
 
 #: src/enquiry.c
-msgid "multi-arch"
-msgstr "çoklu-mimari"
+msgid "multi-arch fields and semantics"
+msgstr ""
 
 #: src/enquiry.c
-msgid "versioned Provides"
-msgstr "sürümlendirilmiş 'Provides'"
+msgid "versioned relationships in the Provides field"
+msgstr ""
 
 #: src/enquiry.c
 #, fuzzy
 #| msgid "Pre-Depends field"
-msgid "Protected field"
+msgid "the Protected field"
 msgstr "'Pre-Depends' alanı"
+
+#: src/enquiry.c
+#, fuzzy, c-format
+#| msgid "cannot stat file '%s'"
+msgid "cannot parse dpkg running version '%s': %s"
+msgstr "'%s' dosyasına stat çağrısı başarısız"
+
+#: src/enquiry.c
+#, fuzzy, c-format
+#| msgid ""
+#| "Version of dpkg with working %s support not yet configured.\n"
+#| " Please use 'dpkg --configure dpkg', and then try again.\n"
+msgid ""
+"Running version of dpkg does not support %s.\n"
+" Please upgrade to at least dpkg %s, and then try again.\n"
+msgstr ""
+"dpkg'nin \"%s\" desteğine sahip bir sürümü henüz yapılandırılmamış.\n"
+" Lütfen 'dpkg --configure dpkg' komutunu çalıştırdıktan sonra tekrar "
+"deneyin.\n"
+
+#: src/enquiry.c
+#, c-format
+msgid "%s assert options - assert whether features are supported:\n"
+msgstr ""
+
+#: src/enquiry.c
+#, c-format
+msgid "unknown --%s-<feature>"
+msgstr ""
 
 #: src/enquiry.c
 #, c-format
@@ -3704,6 +3779,7 @@ msgid ""
 "architectures.\n"
 "  --print-architecture             Print dpkg architecture.\n"
 "  --print-foreign-architectures    Print allowed foreign architectures.\n"
+"  --assert-help                    Show help on assertions.\n"
 "  --assert-<feature>               Assert support for the specified "
 "feature.\n"
 "  --validate-<thing> <string>      Validate a <thing>'s <string>.\n"
@@ -3765,22 +3841,6 @@ msgid ""
 msgstr ""
 "  -?, --help                       Bu yardım iletisini göster.\n"
 "      --version                    Sürüm numarasını göster.\n"
-"\n"
-
-#: src/main.c
-#, fuzzy, c-format
-#| msgid ""
-#| "Assertable features: support-predepends, working-epoch, long-filenames,\n"
-#| "  multi-conrep, multi-arch, versioned-provides.\n"
-#| "\n"
-msgid ""
-"Assertable features: support-predepends, working-epoch, long-filenames,\n"
-"  multi-conrep, multi-arch, versioned-provides, protected-field.\n"
-"\n"
-msgstr ""
-"Desteklendiği öne sürülebilen özellikler: support-predepends, working-"
-"epoch,\n"
-"  long-filenames, multi-conrep, multi-arch, versioned-provides.\n"
 "\n"
 
 #: src/main.c
@@ -4473,6 +4533,7 @@ msgstr ""
 msgid ""
 "Options:\n"
 "  --admindir=<directory>           Use <directory> instead of %s.\n"
+"  --root=<directory>               Use <directory> instead of %s.\n"
 "  --load-avail                     Use available file on --show and --list.\n"
 "  --no-pager                       Disables the use of any pager.\n"
 "  -f|--showformat=<format>         Use alternative format for --show.\n"
@@ -4935,10 +4996,24 @@ msgstr ""
 "\n"
 
 #: src/trigcmd.c
-#, c-format
+#, fuzzy, c-format
+#| msgid ""
+#| "Options:\n"
+#| "  --admindir=<directory>           Use <directory> instead of %s.\n"
+#| "  --by-package=<package>           Override trigger awaiter (normally "
+#| "set\n"
+#| "                                     by dpkg).\n"
+#| "  --await                          Package needs to await the "
+#| "processing.\n"
+#| "  --no-await                       No package needs to await the "
+#| "processing.\n"
+#| "  --no-act                         Just test - don't actually change "
+#| "anything.\n"
+#| "\n"
 msgid ""
 "Options:\n"
 "  --admindir=<directory>           Use <directory> instead of %s.\n"
+"  --root=<directory>               Use <directory> instead of %s.\n"
 "  --by-package=<package>           Override trigger awaiter (normally set\n"
 "                                     by dpkg).\n"
 "  --await                          Package needs to await the processing.\n"
@@ -5111,9 +5186,20 @@ msgstr ""
 "kaldırılıyor ...\n"
 
 #: src/unpack.c
-#, c-format
-msgid "De-configuring %s (%s) ...\n"
-msgstr "Yapılandırma kaldırılıyor: %s (%s) ...\n"
+#, fuzzy, c-format
+#| msgid "De-configuring %s (%s), to allow removal of %s (%s) ...\n"
+msgid "De-configuring %s (%s), to allow installation of %s (%s) ...\n"
+msgstr ""
+"%3$s (%4$s) paketinin kaldırılabilmesi için %1$s (%2$s) yapılandırması "
+"kaldırılıyor ...\n"
+
+#: src/unpack.c
+#, fuzzy, c-format
+#| msgid "De-configuring %s (%s), to allow removal of %s (%s) ...\n"
+msgid "De-configuring %s (%s), to allow configuration of %s (%s) ...\n"
+msgstr ""
+"%3$s (%4$s) paketinin kaldırılabilmesi için %1$s (%2$s) yapılandırması "
+"kaldırılıyor ...\n"
 
 #: src/unpack.c
 #, fuzzy
@@ -5133,6 +5219,22 @@ msgstr ""
 #| msgid "filename \"%s\" is not absolute"
 msgid "conffile name '%s' is not an absolute pathname"
 msgstr "\"%s\" dosya adı mutlak değil"
+
+#: src/unpack.c dpkg-deb/build.c
+#, c-format
+msgid "conffile name missing after flag '%s'"
+msgstr ""
+
+#: src/unpack.c dpkg-deb/build.c
+#, fuzzy, c-format
+#| msgid "conffile filename '%s' contains trailing white spaces"
+msgid "line with conffile filename '%s' has leading white spaces"
+msgstr "yapılandırma dosyası adının (%s) sonunda boşluk karakterleri var"
+
+#: src/unpack.c dpkg-deb/build.c
+#, c-format
+msgid "unknown flag '%s' for conffile '%s'"
+msgstr ""
 
 #: src/unpack.c utils/update-alternatives.c
 #, c-format
@@ -5190,6 +5292,29 @@ msgstr "%s paketi listeyi bilgi dosyası olarak içeriyor"
 #, c-format
 msgid "unable to install new info file '%.250s' as '%.250s'"
 msgstr "yeni bilgi dosyası (%.250s) '%.250s' olarak kurulamadı"
+
+#: src/unpack.c
+#, fuzzy, c-format
+#| msgid "Removing %s (%s) ...\n"
+msgid "Removing obsolete conffile %s ...\n"
+msgstr "Kaldırılıyor: %s (%s) ...\n"
+
+#: src/unpack.c
+#, c-format
+msgid "Obsolete conffile '%s' has been modified by you.\n"
+msgstr ""
+
+#: src/unpack.c
+#, fuzzy, c-format
+#| msgid "Removing %s (%s) ...\n"
+msgid "Saving as %s ...\n"
+msgstr "Kaldırılıyor: %s (%s) ...\n"
+
+#: src/unpack.c
+#, fuzzy, c-format
+#| msgid "cannot append ar member file (%s) to '%s': %s"
+msgid "%s: cannot rename obsolete conffile '%s' to '%s': %s"
+msgstr "üye dosyası (%s) ar dosyasına (%s) eklenemiyor: %s"
 
 #: src/unpack.c
 #, c-format
@@ -5274,6 +5399,14 @@ msgstr "bozuk dosya sistemi tar dosyası - bozuk paket arşivi"
 #, c-format
 msgid "cannot zap possible trailing zeros from dpkg-deb: %s"
 msgstr "olası izleyen sıfırlar dpkg-deb'den kaldırılamadı: %s"
+
+#: src/unpack.c
+#, fuzzy, c-format
+#| msgid "De-configuring %s (%s), to allow removal of %s (%s) ...\n"
+msgid "Removing %s (%s), to allow configuration of %s (%s) ...\n"
+msgstr ""
+"%3$s (%4$s) paketinin kaldırılabilmesi için %1$s (%2$s) yapılandırması "
+"kaldırılıyor ...\n"
 
 #: src/update.c
 #, c-format
@@ -5385,6 +5518,10 @@ msgid "empty string from fgets reading conffiles"
 msgstr "fgets conffiles dosyasını okurken boş dizgi döndürdü"
 
 #: dpkg-deb/build.c
+msgid "empty and whitespace-only lines are not allowed in conffiles"
+msgstr ""
+
+#: dpkg-deb/build.c
 #, c-format
 msgid "conffile filename '%s' contains trailing white spaces"
 msgstr "yapılandırma dosyası adının (%s) sonunda boşluk karakterleri var"
@@ -5398,6 +5535,11 @@ msgstr "yapılandırma dosyası (%.250s) pakette yok"
 #, c-format
 msgid "conffile '%.250s' is not stattable"
 msgstr "yapılandırma dosyasına (%.250s) stat çağrısı yapılamıyor"
+
+#: dpkg-deb/build.c
+#, c-format
+msgid "conffile '%s' is present but is requested to be removed"
+msgstr ""
 
 #: dpkg-deb/build.c
 #, c-format
@@ -5637,7 +5779,9 @@ msgid "cannot close decompressor pipe"
 msgstr "sıkıştırmayı açma borusu kapatılamıyor"
 
 #: dpkg-deb/extract.c
-msgid "decompressing archive member"
+#, fuzzy, c-format
+#| msgid "decompressing archive member"
+msgid "decompressing archive '%s' (size=%jd) member '%s'"
 msgstr "sıkıştırılmış arşiv üyesi açılıyor"
 
 #: dpkg-deb/extract.c
@@ -6509,8 +6653,10 @@ msgstr ""
 #| "  --version                show the version.\n"
 msgid ""
 "Options:\n"
-"  --altdir <directory>     change the alternatives directory.\n"
-"  --admindir <directory>   change the administrative directory.\n"
+"  --altdir <directory>     change the alternatives directory\n"
+"                             (default is %s).\n"
+"  --admindir <directory>   change the administrative directory\n"
+"                             (default is %s).\n"
 "  --instdir <directory>    change the installation directory.\n"
 "  --root <directory>       change the filesystem root directory.\n"
 "  --log <file>             change the log file.\n"
@@ -6569,6 +6715,12 @@ msgstr "'%s' dizini açılamadı"
 #, c-format
 msgid "cannot append to '%s'"
 msgstr "'%s' dosyasının sonuna eklenemedi"
+
+#: utils/update-alternatives.c
+#, fuzzy, c-format
+#| msgid "cannot open directory '%s'"
+msgid "cannot get local time to log into '%s'"
+msgstr "'%s' dizini açılamadı"
 
 #: utils/update-alternatives.c
 #, fuzzy, c-format
@@ -6835,6 +6987,12 @@ msgstr "%2$s için %1$s alternatifi kayıtlı değil; ayarlama yapılmıyor"
 
 #: utils/update-alternatives.c
 #, fuzzy, c-format
+#| msgid "There is no program which provides %s."
+msgid "there is no program which provides %s"
+msgstr "%s alternatifini sağlayan bir program yok."
+
+#: utils/update-alternatives.c
+#, fuzzy, c-format
 #| msgid "%s/%s is dangling; it will be updated with best choice"
 msgid "%s%s/%s is dangling; it will be updated with best choice"
 msgstr "%s/%s bağı kopmuş, en iyi seçenek ile güncellenecek"
@@ -6902,13 +7060,26 @@ msgstr ""
 
 #: utils/update-alternatives.c
 #, c-format
-msgid "Alternative %s unchanged because choice %s is not available."
+msgid "selecting alternative %s as auto"
+msgstr ""
+
+#: utils/update-alternatives.c
+#, fuzzy, c-format
+#| msgid "no alternatives for %s"
+msgid "selecting alternative %s as choice %s"
+msgstr "%s için hiçbir alternatif bulunmuyor"
+
+#: utils/update-alternatives.c
+#, fuzzy, c-format
+#| msgid "Alternative %s unchanged because choice %s is not available."
+msgid "alternative %s unchanged because choice %s is not available"
 msgstr ""
 "%2$s seçeneği kullanılabilir olmadığı için %1$s alternatifi değiştirilmedi."
 
 #: utils/update-alternatives.c
-#, c-format
-msgid "Skip unknown alternative %s."
+#, fuzzy, c-format
+#| msgid "Skip unknown alternative %s."
+msgid "skip unknown alternative %s"
 msgstr "Bilinmeyen alternatifi atla (%s)."
 
 #: utils/update-alternatives.c
@@ -6917,8 +7088,9 @@ msgid "line too long or not terminated while trying to read %s"
 msgstr "%s okunamadı: satır çok uzun ya da bitirilmemiş"
 
 #: utils/update-alternatives.c
-#, c-format
-msgid "Skip invalid line: %s"
+#, fuzzy, c-format
+#| msgid "Skip invalid line: %s"
+msgid "skip invalid selection line: %s"
 msgstr "Geçersiz satırı atla: %s"
 
 #: utils/update-alternatives.c
@@ -7077,6 +7249,48 @@ msgstr ""
 msgid "Authentication is required to run update-alternatives"
 msgstr ""
 "update-alternatives komutunu çalıştırmak için kimlik doğrulama gerekmektedir"
+
+#, c-format
+#~ msgid "removal of %.250s"
+#~ msgstr "%.250s kaldırma"
+
+#, c-format
+#~ msgid "installation of %.250s"
+#~ msgstr "%.250s kurulumu"
+
+#, c-format
+#~ msgid "dpkg not recorded as installed, cannot check for %s support!\n"
+#~ msgstr ""
+#~ "dpkg kurulu olarak kayıtlı değil, \"%s\" desteğinin varlığı "
+#~ "denetlenemiyor!\n"
+
+#~ msgid "epoch"
+#~ msgstr "devir"
+
+#~ msgid "multi-arch"
+#~ msgstr "çoklu-mimari"
+
+#~ msgid "versioned Provides"
+#~ msgstr "sürümlendirilmiş 'Provides'"
+
+#, fuzzy, c-format
+#~| msgid ""
+#~| "Assertable features: support-predepends, working-epoch, long-filenames,\n"
+#~| "  multi-conrep, multi-arch, versioned-provides.\n"
+#~| "\n"
+#~ msgid ""
+#~ "Assertable features: support-predepends, working-epoch, long-filenames,\n"
+#~ "  multi-conrep, multi-arch, versioned-provides, protected-field.\n"
+#~ "\n"
+#~ msgstr ""
+#~ "Desteklendiği öne sürülebilen özellikler: support-predepends, working-"
+#~ "epoch,\n"
+#~ "  long-filenames, multi-conrep, multi-arch, versioned-provides.\n"
+#~ "\n"
+
+#, c-format
+#~ msgid "De-configuring %s (%s) ...\n"
+#~ msgstr "Yapılandırma kaldırılıyor: %s (%s) ...\n"
 
 #~ msgid ""
 #~ "need --display, --query, --list, --get-selections, --config, --set, --set-"

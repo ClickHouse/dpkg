@@ -45,22 +45,7 @@ must_alloc(void *ptr)
 }
 
 void *m_malloc(size_t amount) {
-#ifdef MDEBUG
-  unsigned short *ptr_canary, canary;
-#endif
-  void *ptr;
-
-  ptr = must_alloc(malloc(amount));
-
-#ifdef MDEBUG
-  ptr_canary = ptr;
-  canary = (unsigned short)amount ^ 0xf000;
-  while (amount >= 2) {
-    *ptr_canary++ = canary;
-    amount -= 2;
-  }
-#endif
-  return ptr;
+  return must_alloc(malloc(amount));
 }
 
 void *
@@ -134,7 +119,9 @@ void m_dup2(int oldfd, int newfd) {
   ohshite(_("failed to dup for fd %d"),newfd);
 }
 
-void m_pipe(int *fds) {
+void
+m_pipe(int fds[2])
+{
   if (!pipe(fds)) return;
   onerr_abort++;
   ohshite(_("failed to create pipe"));

@@ -32,15 +32,16 @@ B<DEBIAN/control>
 =head1 DESCRIPTION
 
 Each Debian binary package contains a B<control> file in its B<control>
-member, and its format is a subset of the master B<debian/control> file in
-Debian source packages, see B<deb-src-control>(5).
+member, and its L<deb822(5)> format is a subset of the master
+B<debian/control> file in Debian source packages, see B<deb-src-control>(5).
 
 This file contains a number of fields.
 Each field begins with a tag, such as
 B<Package>
 or
 B<Version>
-(case insensitive), followed by a colon, and the body of the field.
+(case insensitive), followed by a colon, and the body of the field
+(case sensitive unless stated otherwise).
 Fields are delimited only by field tags. In other words, field text
 may be multiple lines in length, but the installation tools will
 generally join lines when processing the body of the field (except
@@ -115,6 +116,7 @@ distribution policy.
 =item B<Installed-Size:> I<size>
 
 The approximate total size of the package's installed files, in KiB units.
+The algorithm to compute the size is described in L<deb-substvars(5)>.
 
 =item B<Protected:> B<yes>|B<no>
 
@@ -122,6 +124,8 @@ This field is usually only needed when the answer is B<yes>.
 It denotes a package that is required for proper booting of the system.
 L<dpkg(1)> or any other installation tool will not allow a B<Protected>
 package to be removed (at least not without using one of the force options).
+
+Supported since dpkg 1.20.1.
 
 =item B<Essential:> B<yes>|B<no>
 
@@ -136,7 +140,7 @@ This field is usually only needed when the answer is B<yes>, and is
 commonly injected by the archive software.
 It denotes a package that is required when building other packages.
 
-=item B<Architecture:> I<arch>|B<all> (recommended)
+=item B<Architecture:> I<arch>|B<all> (required)
 
 The architecture specifies which type of hardware this package was compiled
 for.
@@ -439,6 +443,7 @@ executable format.
 
 =head1 SEE ALSO
 
+L<deb822(5)>,
 B<deb-src-control>(5),
 B<deb>(5),
 B<deb-version>(7),

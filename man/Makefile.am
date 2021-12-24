@@ -6,24 +6,25 @@ man_MANS = \
 	deb-changes.5 \
 	deb-conffiles.5 \
 	deb-control.5 \
-	deb-src-control.5 \
-	deb-src-files.5 \
-	deb-src-rules.5 \
-	deb-src-symbols.5 \
-	deb-version.7 \
-	deb-shlibs.5 \
-	deb-split.5 \
-	deb-substvars.5 \
-	deb-symbols.5 \
+	deb-extra-override.5 \
+	deb-md5sums.5 \
+	deb-old.5 \
+	deb-origin.5 \
+	deb-override.5 \
 	deb-postinst.5 \
 	deb-postrm.5 \
 	deb-preinst.5 \
 	deb-prerm.5 \
+	deb-shlibs.5 \
+	deb-split.5 \
+	deb-src-control.5 \
+	deb-src-files.5 \
+	deb-src-rules.5 \
+	deb-src-symbols.5 \
+	deb-substvars.5 \
+	deb-symbols.5 \
 	deb-triggers.5 \
-	deb-old.5 \
-	deb-origin.5 \
-	deb-override.5 \
-	deb-extra-override.5 \
+	deb-version.7 \
 	deb.5 \
 	deb822.5 \
 	dpkg-architecture.1 \
@@ -33,6 +34,7 @@ man_MANS = \
 	dpkg-deb.1 \
 	dpkg-distaddfile.1 \
 	dpkg-divert.1 \
+	dpkg-fsys-usrunmess.8 \
 	dpkg-genbuildinfo.1 \
 	dpkg-genchanges.1 \
 	dpkg-gencontrol.1 \
@@ -54,33 +56,45 @@ man_MANS = \
 	dpkg.1 \
 	dpkg.cfg.5 \
 	dsc.5 \
-	$(nil)
+	# EOL
 
 if BUILD_DSELECT
 man_MANS += \
 	dselect.1 \
-	dselect.cfg.5
+	dselect.cfg.5 \
+	# EOL
 endif
 
 if BUILD_START_STOP_DAEMON
 man_MANS += \
-	start-stop-daemon.8
+	start-stop-daemon.8 \
+	# EOL
 endif
 
 if BUILD_UPDATE_ALTERNATIVES
 man_MANS += \
-	update-alternatives.1
+	update-alternatives.1 \
+	# EOL
 endif
 
 CLEANFILES = $(man_MANS)
 
 EXTRA_DIST = \
+	po/ChangeLog.old \
+	po/dpkg-man.pot \
+	po/po4a.cfg \
+	utf8toman.sed \
+	# EOL
+
+# Man page sources.
+EXTRA_DIST += \
 	deb-buildinfo.pod \
 	deb-changelog.pod \
 	deb-changes.pod \
 	deb-conffiles.pod \
 	deb-control.pod \
 	deb-extra-override.pod \
+	deb-md5sums.pod \
 	deb-old.pod \
 	deb-origin.pod \
 	deb-override.pod \
@@ -107,6 +121,7 @@ EXTRA_DIST = \
 	dpkg-deb.pod \
 	dpkg-distaddfile.pod \
 	dpkg-divert.pod \
+	dpkg-fsys-usrunmess.pod \
 	dpkg-genbuildinfo.pod \
 	dpkg-genchanges.pod \
 	dpkg-gencontrol.pod \
@@ -125,21 +140,18 @@ EXTRA_DIST = \
 	dpkg-statoverride.pod \
 	dpkg-trigger.pod \
 	dpkg-vendor.pod \
-	dpkg.pod \
 	dpkg.cfg.pod \
+	dpkg.pod \
 	dsc.pod \
-	dselect.pod \
 	dselect.cfg.pod \
+	dselect.pod \
 	start-stop-daemon.pod \
 	update-alternatives.pod \
-	utf8toman.sed \
-	po/ChangeLog.old \
-	po/po4a.cfg \
-	po/dpkg-man.pot
+	# EOL
 
 
 # Extract the list of languages from the po4a config file.
-LINGUAS_DIST = `sed -ne 's/^.*\[po4a_langs\] \(.*\)$$/\1/p' $(srcdir)/po/po4a.cfg`
+LINGUAS_DIST = `$(SED) -ne 's/^.*\[po4a_langs\] \(.*\)$$/\1/p' $(srcdir)/po/po4a.cfg`
 
 # If the user has not defined it let's use the default.
 LINGUAS ?= $(LINGUAS_DIST)
@@ -149,33 +161,41 @@ PO4A_V = $(PO4A_V_@AM_V@)
 PO4A_V_ = $(PO4A_V_@AM_DEFAULT_V@)
 PO4A_V_0 = @echo "  PO4A   $@";
 
-PO4A_OPTS = --previous --srcdir $(srcdir) --destdir $(builddir) --no-backups \
-            --porefs file --msgmerge-opt=--add-location=file \
-            --package-name dpkg-man --package-version $(PACKAGE_VERSION) \
-            --copyright-holder "$(PACKAGE_COPYRIGHT_HOLDER)" \
-            --msgid-bugs-address $(PACKAGE_BUGREPORT)
+PO4A_OPTS = \
+	--previous \
+	--srcdir $(srcdir) \
+	--destdir $(builddir) \
+	--no-backups \
+	--porefs file \
+	--msgmerge-opt=--add-location=file \
+	--package-name dpkg-man \
+	--package-version $(PACKAGE_VERSION) \
+	--copyright-holder "$(PACKAGE_COPYRIGHT_HOLDER)" \
+	--msgid-bugs-address $(PACKAGE_BUGREPORT) \
+	# EOL
 
 all-local: all-local-@USE_PO4A@
 
 all-local-no:
 all-local-yes: gen-man
 
-# We use the man-once target to guarantee there is never an empty call in
-# gen-man, that starts recursing infinitely.
-.PHONY: gen-man man-once
+.PHONY: gen-man
 
 gen-man: man.stamp
 	for lang in $(LINGUAS); do \
 	  files=""; \
 	  for man in $(man_MANS); do \
-	    trans="$${man%%.[0-9]}.pod"; \
-	    if [ -f $(builddir)/$$lang/$$trans ]; then \
+	    tmpl="$${man%%.[0-9]}.pod"; \
+	    if [ -f "$(builddir)/$$lang/$$tmpl" ]; then \
 	      files="$$files $(builddir)/$$lang/$$man"; \
-	    elif [ -f $(srcdir)/$$lang/$$trans ]; then \
-	      files="$$files $(srcdir)/$$lang/$$man"; \
+	    elif [ -f "$(srcdir)/$$lang/$$tmpl" ]; then \
+	      files="$$files $(builddir)/$$lang/$$man"; \
 	    fi; \
 	  done; \
-	  $(MAKE) mandir="$(mandir)/$$lang" man_MANS="" man-once $$files; \
+	  if [ -n "$$files" ]; then \
+	    $(MKDIR_P) $$lang; \
+	    $(MAKE) mandir="$(mandir)/$$lang" man_MANS="" $$files; \
+	  fi; \
 	done
 
 # FIXME: Use a stamp file until po4a supports them internally.
@@ -201,27 +221,38 @@ POD2MAN_V = $(POD2MAN_V_@AM_V@)
 POD2MAN_V_ = $(POD2MAN_V_@AM_DEFAULT_V@)
 POD2MAN_V_0 = @echo "  POD2MAN $@";
 
-POD2MAN_OPTS = --utf8 --center='dpkg suite' --release=$(PACKAGE_VERSION) \
-               --date='$(PACKAGE_RELEASE_DATE)'
+POD2MAN_OPTS = \
+	--utf8 \
+	--center='dpkg suite' \
+	--release=$(PACKAGE_VERSION) \
+	--date='$(PACKAGE_RELEASE_DATE)' \
+	# EOL
 
-MANFIXUP = sed \
-	-f $(srcdir)/utf8toman.sed \
+PODSUBST = $(SED) \
 	-e 's/%PACKAGE%/$(PACKAGE)/g' \
 	-e 's/%VERSION%/$(PACKAGE_VERSION)/g' \
 	-e 's/%RELEASE_DATE%/$(PACKAGE_RELEASE_DATE)/g' \
 	-e 's:%CONFDIR%:$(sysconfdir):g' \
+	-e 's:%RUNSTATEDIR%:$(runstatedir):g' \
 	-e 's:%LOGDIR%:$(logdir):g' \
 	-e 's:%ADMINDIR%:$(admindir):g' \
+	-e 's:%BACKUPSDIR%:$(backupsdir):g' \
 	-e 's:%PKGDOCDIR%:$(docdir):g' \
 	-e 's:%PKGCONFDIR%:$(pkgconfdir):g' \
 	-e 's:%PKGLIBDIR%:$(pkglibexecdir):g' \
 	-e 's:%PKGDATADIR%:$(pkgdatadir):g' \
-	$(nil)
+	# EOL
+
+MANFIXUP = $(SED) \
+	-f $(srcdir)/utf8toman.sed \
+	# EOL
 
 if BUILD_POD_DOC
-MANGEN = $(POD2MAN_V) filename='$@'; $(POD2MAN) $(POD2MAN_OPTS) \
+MANGEN = $(POD2MAN_V) filename='$@'; \
+	  $(PODSUBST) $< | \
+	  $(POD2MAN) $(POD2MAN_OPTS) \
 	  --name="$$(basename $${filename%.*})" \
-	  --section="$${filename\#\#*.}" $< | \
+	  --section="$${filename\#\#*.}" | \
 	  $(MANFIXUP) >$@
 endif
 
@@ -241,11 +272,11 @@ install-data-local-yes:
 	for lang in $(LINGUAS); do \
 	  files=""; \
 	  for man in $(man_MANS); do \
-	    trans="$${man%%.[0-9]}.pod"; \
-	    if [ -f $(builddir)/$$lang/$$trans ]; then \
+	    tmpl="$${man%%.[0-9]}.pod"; \
+	    if [ -f "$(builddir)/$$lang/$$tmpl" ]; then \
 	      files="$$files $(builddir)/$$lang/$$man"; \
-	    elif [ -f $(srcdir)/$$lang/$$trans ]; then \
-	      files="$$files $(srcdir)/$$lang/$$man"; \
+	    elif [ -f "$(srcdir)/$$lang/$$tmpl" ]; then \
+	      files="$$files $(builddir)/$$lang/$$man"; \
 	    fi; \
 	  done; \
 	  $(MAKE) install-man mandir="$(mandir)/$$lang" man_MANS="$$files"; \
@@ -258,11 +289,11 @@ uninstall-local-yes:
 	for lang in $(LINGUAS); do \
 	  files=""; \
 	  for man in $(man_MANS); do \
-	    trans="$${man%%.[0-9]}.pod"; \
-	    if [ -f $(builddir)/$$lang/$$trans ]; then \
+	    tmpl="$${man%%.[0-9]}.pod"; \
+	    if [ -f "$(builddir)/$$lang/$$tmpl" ]; then \
 	      files="$$files $(builddir)/$$lang/$$man"; \
-	    elif [ -f $(srcdir)/$$lang/$$trans ]; then \
-	      files="$$files $(srcdir)/$$lang/$$man"; \
+	    elif [ -f "$(srcdir)/$$lang/$$tmpl" ]; then \
+	      files="$$files $(builddir)/$$lang/$$man"; \
 	    fi; \
 	  done; \
 	  $(MAKE) uninstall-man mandir="$(mandir)/$$lang" man_MANS="$$files"; \
@@ -272,7 +303,11 @@ dist-hook: man.stamp
 	cp -p $< $(distdir)/
 	for lang in $(LINGUAS_DIST); do \
 	  cp -p $(srcdir)/po/$$lang.po $(distdir)/po; \
-	  cp -p $(srcdir)/po/$$lang.add $(distdir)/po; \
-	  $(MKDIR_P) $(distdir)/$$lang; \
-	  cp -pR $(srcdir)/$$lang $(distdir)/; \
+	  if [ -e "$(srcdir)/po/$$lang.add" ]; then \
+	    cp -p $(srcdir)/po/$$lang.add $(distdir)/po; \
+	  fi; \
+	  if [ -n "`ls $(builddir)/$$lang/*.pod 2>/dev/null`" ]; then \
+	    $(MKDIR_P) $(distdir)/$$lang; \
+	    cp -p $(builddir)/$$lang/*.pod $(distdir)/$$lang/; \
+	  fi; \
 	done

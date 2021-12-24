@@ -26,7 +26,7 @@ use Dpkg::ErrorHandling;
 use Dpkg::IPC;
 use Dpkg::Vendor;
 
-my $srcdir = $ENV{srcdir} || '.';
+my $srcdir = rel2abs($ENV{srcdir} || '.');
 my $datadir = test_get_data_path();
 
 # Turn these into absolute names so that we can safely switch to the test
@@ -40,14 +40,19 @@ delete $ENV{MAKEFLAGS};
 # Delete other variables that can affect the tests.
 delete $ENV{$_} foreach grep { m/^DEB_/ } keys %ENV;
 
+# Set architecture variables to not require dpkg nor gcc.
+$ENV{PATH} = "$srcdir/t/mock-bin:$ENV{PATH}";
+
 $ENV{DEB_BUILD_PATH} = rel2abs($datadir);
 
 sub test_makefile {
-    my $makefile = shift;
+    my ($makefile, $desc) = @_;
+
+    $desc //= 'default';
 
     spawn(exec => [ $Dpkg::PROGMAKE, '-C', $datadir, '-f', $makefile ],
           wait_child => 1, nocheck => 1);
-    ok($? == 0, "makefile $makefile computes all values correctly");
+    ok($? == 0, "makefile $makefile computes all values correctly ($desc)");
 }
 
 sub cmd_get_vars {
@@ -71,9 +76,9 @@ my %arch = cmd_get_vars($ENV{PERL}, "$srcdir/dpkg-architecture.pl", '-f');
 
 delete $ENV{$_} foreach keys %arch;
 $ENV{"TEST_$_"} = $arch{$_} foreach keys %arch;
-test_makefile('architecture.mk');
+test_makefile('architecture.mk', 'without envvars');
 $ENV{$_} = $arch{$_} foreach keys %arch;
-test_makefile('architecture.mk');
+test_makefile('architecture.mk', 'with envvars');
 
 $ENV{DEB_BUILD_OPTIONS} = 'parallel=16';
 $ENV{TEST_DEB_BUILD_OPTION_PARALLEL} = '16';
@@ -113,12 +118,12 @@ foreach my $tool (keys %buildtools) {
     delete $ENV{"${tool}_FOR_BUILD"};
     $ENV{"TEST_${tool}_FOR_BUILD"} = "$ENV{DEB_BUILD_GNU_TYPE}-$buildtools{$tool}";
 }
-test_makefile('buildtools.mk');
+test_makefile('buildtools.mk', 'without envvars');
 
 $ENV{DEB_BUILD_OPTIONS} = 'nostrip';
 $ENV{TEST_STRIP} = ':';
 $ENV{TEST_STRIP_FOR_BUILD} = ':';
-test_makefile('buildtools.mk');
+test_makefile('buildtools.mk', 'with envvars');
 delete $ENV{DEB_BUILD_OPTIONS};
 
 foreach my $tool (keys %buildtools) {
